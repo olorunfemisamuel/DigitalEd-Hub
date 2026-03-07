@@ -110,7 +110,7 @@
       <div class="pt-3 border-t border-gray-100 flex flex-col gap-3">
         <NuxtLink to="/login" @click="isOpen = false" class="text-sm text-gray-700 font-medium hover:text-blue-600">Login</NuxtLink>
         <NuxtLink to="/register" @click="isOpen = false"
-          class="bg-teal-500 text-white text-sm font-medium px-4 py-2 rounded-md text-center hover:bg-teal-600 transition-colors">
+          class="bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-md text-center hover:bg-teal-600 transition-colors">
           Get Started →
         </NuxtLink>
       </div>

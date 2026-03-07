@@ -201,6 +201,6 @@ async function handleLogin() {
   // if (error) { ... handle error ... }
 
   // Redirect to courses after successful login
-  await navigateTo('/courses')
+  await navigateTo('/dashboard')
 }
 </script>

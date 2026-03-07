@@ -16,12 +16,14 @@
               <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
             </svg>
           </div>
-          <span class="text-blue-600 font-bold text-base tracking-tight">EduTrain</span>
+          <span class="text-blue-600 font-bold text-base tracking-tight">DigitalEd Hub</span>
         </NuxtLink>
 
         <!-- Tagline -->
         <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
-          The world's leading platform for continuous professional development designed specifically for the modern educator.
+           DigitalEd Hub gives educators the tools,
+            courses and community to teach online
+            and earn consistently.
         </p>
 
         <!-- Social Icons -->
@@ -88,17 +90,17 @@
     <!-- Bottom Bar -->
     <div class="border-t border-gray-100">
       <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
-        <p class="text-gray-400 text-xs">© 2024 EduTrain. All rights reserved.</p>
+        <p class="text-gray-400 text-xs">© 2026 DigitalEd Hub. All rights reserved.</p>
         <div class="flex items-center gap-2 text-gray-400 text-xs">
           <span>English (US)</span>
           <span class="text-gray-200">|</span>
-          <span>Lagos, Nigeria</span>
+          <span>Kaduna, Nigeria</span>
         </div>
       </div>
     </div>
 
     <!-- Blue bottom accent line -->
-    <div class="h-1 bg-blue-600 w-full"></div>
+    <!-- <div class="h-1 bg-blue-600 w-full"></div> -->
 
   </footer>
 </template>

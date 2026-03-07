@@ -18,7 +18,7 @@
         <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2l2.9 6.1L22 11l-7.1 2.9L12 20l-2.9-6.1L2 11l7.1-2.9L12 2z"/>
         </svg>
-        <span class="text-white font-semibold text-sm">EduTrain</span>
+        <span class="text-white font-semibold text-sm">DigitalEd Hub</span>
       </div>
 
       <!-- Text -->
@@ -31,7 +31,7 @@
         </h2>
 
         <p class="text-blue-100 text-sm leading-relaxed mb-6 max-w-sm">
-          Join a global community of 50,000+ professionals sharing lesson plans,
+          Join a global community of professionals sharing lesson plans,
           mentorship, and growing their teaching careers.
         </p>
 
