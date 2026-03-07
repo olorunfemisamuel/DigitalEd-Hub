@@ -1,0 +1,104 @@
+<template>
+  <footer class="bg-white border-t border-gray-100">
+
+    <!-- Top Section -->
+    <div class="max-w-7xl mx-auto px-6 md:px-12 py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+
+      <!-- Brand Column -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
+        <!-- Logo -->
+        <NuxtLink to="/" class="flex items-center gap-2 w-fit">
+          <div class="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+              <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+            </svg>
+          </div>
+          <span class="text-blue-600 font-bold text-base tracking-tight">EduTrain</span>
+        </NuxtLink>
+
+        <!-- Tagline -->
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+          The world's leading platform for continuous professional development designed specifically for the modern educator.
+        </p>
+
+        <!-- Social Icons -->
+        <div class="flex items-center gap-3 mt-1">
+          <!-- Facebook / Community -->
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-300 transition-colors duration-200">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </a>
+          <!-- Share -->
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-300 transition-colors duration-200">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          </a>
+          <!-- Email -->
+          <a href="#" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-300 transition-colors duration-200">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Platform Links -->
+      <div class="flex flex-col gap-4">
+        <h4 class="text-gray-900 font-semibold text-sm">Platform</h4>
+        <ul class="flex flex-col gap-3">
+          <li><NuxtLink to="/courses" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">All Courses</NuxtLink></li>
+          <li><NuxtLink to="/resources" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Free Resources</NuxtLink></li>
+          <li><NuxtLink to="/schools" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">For Schools</NuxtLink></li>
+          <li><NuxtLink to="/pricing" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Pricing Plans</NuxtLink></li>
+        </ul>
+      </div>
+
+      <!-- Company Links -->
+      <div class="flex flex-col gap-4">
+        <h4 class="text-gray-900 font-semibold text-sm">Company</h4>
+        <ul class="flex flex-col gap-3">
+          <li><NuxtLink to="/about" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">About Us</NuxtLink></li>
+          <li><NuxtLink to="/mentors" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Our Mentors</NuxtLink></li>
+          <li><NuxtLink to="/careers" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Careers</NuxtLink></li>
+          <li><NuxtLink to="/blog" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Blog</NuxtLink></li>
+        </ul>
+      </div>
+
+      <!-- Support Links -->
+      <div class="flex flex-col gap-4">
+        <h4 class="text-gray-900 font-semibold text-sm">Support</h4>
+        <ul class="flex flex-col gap-3">
+          <li><NuxtLink to="/help" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Help Center</NuxtLink></li>
+          <li><NuxtLink to="/terms" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Terms of Service</NuxtLink></li>
+          <li><NuxtLink to="/privacy" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Privacy Policy</NuxtLink></li>
+          <li><NuxtLink to="/contact" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Contact Support</NuxtLink></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
+        <p class="text-gray-400 text-xs">© 2024 EduTrain. All rights reserved.</p>
+        <div class="flex items-center gap-2 text-gray-400 text-xs">
+          <span>English (US)</span>
+          <span class="text-gray-200">|</span>
+          <span>Lagos, Nigeria</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blue bottom accent line -->
+    <div class="h-1 bg-blue-600 w-full"></div>
+
+  </footer>
+</template>
