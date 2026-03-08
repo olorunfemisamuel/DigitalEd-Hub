@@ -29,7 +29,7 @@
       <div class="w-full max-w-md bg-white rounded-xl shadow-md overflow-hidden">
 
         <!-- Header -->
-        <div class="bg-gradient-to-b from-[#cbd5e1] via-[#e2e8f0] to-[#f1f5f9] px-10 py-8 text-center">
+        <div class="bg-gradient-to-b from-[#cbd5e1] via-[#e2e8f0] to-[#5d9cdc] px-10 py-8 text-center">
           <h1 class="text-xl font-semibold text-gray-800">
             Welcome Back
           </h1>
@@ -161,7 +161,7 @@
 
           <!-- Bottom Link -->
           <p class="text-center text-sm text-gray-500">
-            New to EduTrain?
+            New to DigitalEd Hub?
             <NuxtLink to="/register" class="text-blue-600 font-semibold hover:underline ml-1">
               Create an account
             </NuxtLink>
@@ -176,7 +176,7 @@
     <!-- Footer -->
     <div class="text-center py-6">
       <p class="text-gray-400 text-xs">
-        © 2026 DigitalEd Hub. All rights reserved. Professional skill development platform.
+        © 2026 DigitalEd Hub. All rights reserved. The Educator's Community.
       </p>
     </div>
 

@@ -23,21 +23,21 @@ NAVBAR
     <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center gap-8 ml-8">
       <NuxtLink to="/dashboard" class="text-gray-500 text-sm hover:text-gray-800">Dashboard</NuxtLink>
-      <NuxtLink to="/courses" class="text-blue-600 text-sm font-semibold border-b-2 border-blue-600 pb-4">Courses</NuxtLink>
+      <NuxtLink to="/courses" class="text-gray-500 text-sm hover:text-gray-800">Courses</NuxtLink>
       <NuxtLink to="/students" class="text-gray-500 text-sm hover:text-gray-800">Students</NuxtLink>
-      <NuxtLink to="/earnings" class="text-gray-500 text-sm hover:text-gray-800">Earnings</NuxtLink>
+      <!-- <NuxtLink to="/earnings" class="text-gray-500 text-sm hover:text-gray-800">Earnings</NuxtLink> -->
     </nav>
 
     <!-- Right -->
     <div class="ml-auto flex items-center gap-4">
       <!-- Search -->
-      <div class="hidden md:flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 w-52">
-        <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- <div class="hidden md:flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 w-52"> -->
+        <!-- <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" placeholder="Search courses..." class="text-xs text-gray-500 outline-none bg-transparent w-full"/>
-      </div>
+        <input type="text" placeholder="Search courses..." class="text-xs text-gray-500 outline-none bg-transparent w-full"/> -->
+      <!-- </div> -->
       <!-- Bell -->
       <button class="text-gray-400 hover:text-gray-600">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -66,7 +66,7 @@ NAVBAR
       <NuxtLink to="/dashboard">Dashboard</NuxtLink>
       <NuxtLink to="/courses" class="text-blue-600 font-semibold">Courses</NuxtLink>
       <NuxtLink to="/students">Students</NuxtLink>
-      <NuxtLink to="/earnings">Earnings</NuxtLink>
+      <!-- <NuxtLink to="/earnings">Earnings</NuxtLink> -->
     </nav>
   </div>
 </header>
@@ -82,9 +82,9 @@ MAIN
       <h1 class="text-2xl font-bold text-gray-900">Our Courses</h1>
       <p class="text-gray-400 text-sm mt-1">Everything you need to teach online and earn</p>
     </div>
-    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow transition-colors duration-200">
+    <!-- <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow transition-colors duration-200">
       + Create New Course
-    </button>
+    </button> -->
   </div>
 
   <!-- Tabs -->
@@ -201,7 +201,7 @@ const courses: Course[] = [
     id: 1,
     title: 'Digital Marketing Masterclass',
     description: 'Master SEO, SEM, and social media advertising. Learn to scale brands with data-driven strategies.',
-    price: 25000,
+    price: 5000,
     level: 'Beginner',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
     badges: [
@@ -213,7 +213,7 @@ const courses: Course[] = [
     id: 2,
     title: 'Advanced Python for Data Science',
     description: 'Deep dive into NumPy, Pandas and Scikit-learn. Build predictive models from scratch.',
-    price: 45000,
+    price: 4500,
     level: 'Advanced',
     image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80',
     badges: [
@@ -224,7 +224,7 @@ const courses: Course[] = [
     id: 3,
     title: 'UI/UX Design Essentials',
     description: 'Learn Figma and user-centric design principles. Create stunning prototypes that convert.',
-    price: 15000,
+    price: 10000,
     level: 'Beginner',
     image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80',
     badges: [
@@ -235,7 +235,7 @@ const courses: Course[] = [
     id: 4,
     title: 'Full-stack Web Development',
     description: 'Build robust apps with React and Nodejs. Comprehensive guide from frontend to backend.',
-    price: 60000,
+    price: 10000,
     level: 'Intermediate',
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80',
     badges: [
@@ -246,7 +246,7 @@ const courses: Course[] = [
     id: 5,
     title: 'Business Analytics 101',
     description: 'Data-driven decision making for managers. Learn to interpret KPIs and forecast growth.',
-    price: 20000,
+    price: 2000,
     level: 'Beginner',
     image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80',
     badges: [
@@ -257,7 +257,7 @@ const courses: Course[] = [
     id: 6,
     title: 'Social Media Strategy',
     description: 'Scale your brand presence across platforms. Content creation and community management.',
-    price: 18500,
+    price: 1500,
     level: 'Intermediate',
     image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=80',
     badges: [
