@@ -131,6 +131,11 @@
           >
             Sign In →
           </button>
+<p v-if="errorMsg" class="text-red-500 text-xs text-center -mt-2">
+  {{ errorMsg }}
+</p>
+
+          
 
           <!-- Divider -->
           <div class="flex items-center gap-3">
@@ -189,7 +194,7 @@ import { ref } from 'vue'
 definePageMeta({
   layout: false
 })
-
+const errorMsg = ref('')
 const email = ref('')
 const password = ref('')
 const remember = ref(false)
@@ -204,10 +209,9 @@ async function handleLogin() {
   })
 
   if (error) {
-    console.error('Login failed:', error.message)
+    errorMsg.value = error.message   // ← now user SEES the error
     return
   }
-
   await navigateTo('/dashboard')
 }
 </script>

@@ -239,6 +239,7 @@ definePageMeta({
   layout:false
 })
 
+const errorMsg = ref('')
 const fullName = ref('')
 const email = ref('')
 const password = ref('')
@@ -261,11 +262,10 @@ async function handleRegister() {
     }
   })
 
-  if (error) {
-    console.error('Register failed:', error.message)
+ if (error) {
+    errorMsg.value = error.message
     return
   }
-
   await navigateTo('/courses')
 }
 
