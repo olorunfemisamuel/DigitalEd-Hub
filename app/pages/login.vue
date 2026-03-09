@@ -196,11 +196,18 @@ const remember = ref(false)
 const showPassword = ref(false)
 
 async function handleLogin() {
-  // TODO: replace with real Supabase auth
-  // const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
-  // if (error) { ... handle error ... }
+  const supabase = useSupabaseClient()
 
-  // Redirect to courses after successful login
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+
+  if (error) {
+    console.error('Login failed:', error.message)
+    return
+  }
+
   await navigateTo('/dashboard')
 }
 </script>

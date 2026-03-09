@@ -75,7 +75,7 @@ const courses = [
   {
     title: 'Advanced Digital Pedagogy',
     price: '₦1,000',
-    author: 'Dr. Adeyemi',
+    author: 'Ufedo .L. Obochi',
     rating: '4.9',
     image: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?w=600&q=80',
     desc: 'Learn how to integrate AI and digital tools into lessons.'
@@ -83,7 +83,7 @@ const courses = [
   {
     title: 'Curriculum Design Mastery',
     price: '₦6,000',
-    author: 'Prof. Okoro',
+    author: 'Ufedo .L. Obochi',
     rating: '4.8',
     image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80',
     desc: 'Build future-proof curricula that meet global standards.'
@@ -91,7 +91,7 @@ const courses = [
   {
     title: 'Classroom Leadership',
     price: '₦3,500',
-    author: 'Sarah Jenkins',
+    author: 'Ufedo .L. Obochi',
     rating: '5.0',
     image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
     desc: 'Develop leadership skills for inspiring classrooms.'
@@ -99,7 +99,7 @@ const courses = [
   {
     title: 'Student Engagement',
     price: '₦5,000',
-    author: 'Mrs Balogun',
+    author: 'Ufedo .L. Obochi',
     rating: '4.7',
     image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80',
     desc: 'Keep students motivated and actively participating.'
@@ -107,7 +107,7 @@ const courses = [
   {
     title: 'Course Monetisation',
     price: '₦7,000',
-    author: 'Tunde Fashola',
+    author: 'Ufedo .L. Obochi',
     rating: '4.9',
     image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80',
     desc: 'Turn your knowledge into a profitable course.'

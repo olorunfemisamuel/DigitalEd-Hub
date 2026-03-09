@@ -246,7 +246,27 @@ const niche = ref('')
 const agreed = ref(false)
 const showPassword = ref(false)
 
-async function handleRegister(){
+//supabase auth
+async function handleRegister() {
+  const supabase = useSupabaseClient()
+
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+    options: {
+      data: {
+        full_name: fullName.value,
+        niche: niche.value,
+      }
+    }
+  })
+
+  if (error) {
+    console.error('Register failed:', error.message)
+    return
+  }
+
   await navigateTo('/courses')
 }
+
 </script>

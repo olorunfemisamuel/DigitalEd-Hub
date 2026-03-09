@@ -1,9 +1,16 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/supabase',        // ← add this
+  ],
 
   css: ['~/assets/css/main.css'],
+
+  supabase: {
+    redirect: false            // ← we'll handle redirects manually
+  },
 
   runtimeConfig: {
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,

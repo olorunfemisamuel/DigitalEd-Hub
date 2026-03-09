@@ -18,19 +18,19 @@
           to new courses.
         </p>
 
-        <!-- Input + Button Row -->
-        <div class="flex items-center gap-3 max-w-md mx-auto">
-          <input
-            type="email"
-            placeholder="Enter your school email"
-            class="flex-1 bg-white text-gray-800 text-sm placeholder-gray-400 px-5 py-3 rounded-lg outline-none focus:ring-2 focus:ring-white/50"
-          />
-          <button
-            class="bg-blue-500 hover:bg-blue-400 text-white text-sm font-semibold px-6 py-3 rounded-lg whitespace-nowrap transition-colors duration-200 overflow-hidden"
-          >
-            Sign Up Now
-          </button>
-        </div>
+       <!-- Input + Button Row -->
+<div class="flex flex-col sm:flex-row items-stretch gap-3 max-w-md mx-auto">
+  <input
+    type="email"
+    placeholder="Enter your school email"
+    class="flex-1 bg-white text-gray-800 text-sm placeholder-gray-400 px-5 py-3 rounded-lg outline-none focus:ring-2 focus:ring-white/50"
+  />
+  <button
+    class="bg-blue-500 hover:bg-blue-400 text-white text-sm font-semibold px-6 py-3 rounded-lg whitespace-nowrap transition-colors duration-200 w-full sm:w-auto"
+  >
+    Sign Up Now
+  </button>
+</div>
 
         <!-- Privacy note -->
         <p class="text-blue-200 text-xs mt-4">We respect your privacy. No spam, ever.</p>
