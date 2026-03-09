@@ -26,14 +26,14 @@
 
         <div class="flex gap-4 flex-wrap">
           <NuxtLink
-            to="/courses"
+            to="/register"
             class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-lg"
           >
             Explore Courses →
           </NuxtLink>
 
           <NuxtLink
-            to="/courses"
+            to="/register"
             class="border border-gray-300 text-gray-800 text-sm font-semibold px-6 py-3 rounded-lg"
           >
             See How It Works

@@ -13,12 +13,12 @@
           <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
         </svg>
       </div>
-      <span class="text-blue-600 font-bold text-sm">CoursePlatform</span>
+      <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
     </NuxtLink>
     <nav class="hidden md:flex items-center gap-8 ml-8">
-      <NuxtLink to="/dashboard" class="text-gray-500 text-sm hover:text-gray-800">Dashboard</NuxtLink>
+      <!-- <NuxtLink to="/dashboard" class="text-gray-500 text-sm hover:text-gray-800">Dashboard</NuxtLink> -->
       <NuxtLink to="/courses" class="text-gray-500 text-sm hover:text-gray-800">Courses</NuxtLink>
-      <NuxtLink to="/students" class="text-gray-500 text-sm hover:text-gray-800">Students</NuxtLink>
+      <!-- <NuxtLink to="/students" class="text-gray-500 text-sm hover:text-gray-800">Students</NuxtLink> -->
     </nav>
     <div class="ml-auto flex items-center gap-4">
       <button class="text-gray-400 hover:text-gray-600">
@@ -237,7 +237,13 @@ const filteredCourses = computed((): Course[] => {
 })
 
 function handleEnroll(course: Course) {
-  enrollingId.value = course.id
+  const user = useSupabaseUser()
+
+  // Not logged in → send to register first
+  if (!user.value) {
+    return navigateTo('/register')
+  }
+
 
   const PaystackPop = (window as any).PaystackPop
 
