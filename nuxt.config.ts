@@ -8,11 +8,16 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  supabase: {
-    redirect: false,
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_ANON_KEY,
+ supabase: {
+  redirect: true,           // ← change false to true
+  redirectOptions: {
+    login: '/login',
+    callback: '/confirm',   // Supabase processes the token here
+    exclude: ['/'],
   },
+  url: process.env.SUPABASE_URL,
+  key: process.env.SUPABASE_ANON_KEY,
+},
 
   runtimeConfig: {
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
