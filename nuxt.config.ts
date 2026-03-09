@@ -16,9 +16,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
-    paystackSecretKey: process.env.PAYSTACK_SECRET_KEY,
+    paystackSecretKey:  process.env.PAYSTACK_SECRET_KEY,
     public: {
-      paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY,
+      // ✅ Empty string as default — Nuxt will replace with .env value at runtime
+      paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY ?? '',
     }
   }
 })

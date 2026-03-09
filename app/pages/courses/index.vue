@@ -16,9 +16,7 @@
       <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
     </NuxtLink>
     <nav class="hidden md:flex items-center gap-8 ml-8">
-      <!-- <NuxtLink to="/dashboard" class="text-gray-500 text-sm hover:text-gray-800">Dashboard</NuxtLink> -->
       <NuxtLink to="/courses" class="text-gray-500 text-sm hover:text-gray-800">Courses</NuxtLink>
-      <!-- <NuxtLink to="/students" class="text-gray-500 text-sm hover:text-gray-800">Students</NuxtLink> -->
     </nav>
     <div class="ml-auto flex items-center gap-4">
       <button class="text-gray-400 hover:text-gray-600">
@@ -35,7 +33,6 @@
     <nav class="flex flex-col gap-4 text-sm">
       <NuxtLink to="/dashboard">Dashboard</NuxtLink>
       <NuxtLink to="/courses" class="text-blue-600 font-semibold">Courses</NuxtLink>
-      <NuxtLink to="/students">Students</NuxtLink>
     </nav>
   </div>
 </header>
@@ -91,7 +88,7 @@
         <div class="flex items-center justify-between">
           <span class="text-gray-900 font-bold text-sm">₦{{ course.price.toLocaleString() }}</span>
 
-          <!-- Already enrolled: go directly to learn page -->
+          <!-- Already enrolled → go to learn page -->
           <NuxtLink
             v-if="isEnrolled(course.id)"
             :to="`/courses/${course.id}/learn`"
@@ -100,7 +97,7 @@
             Continue →
           </NuxtLink>
 
-          <!-- Not enrolled: trigger Paystack -->
+          <!-- Not enrolled → Paystack -->
           <button
             v-else
             @click="handleEnroll(course)"
@@ -108,7 +105,7 @@
             class="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors duration-200 flex items-center gap-1.5"
           >
             <svg v-if="enrollingId === course.id" class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
             </svg>
             {{ enrollingId === course.id ? 'Loading...' : 'Enroll Now' }}
           </button>
@@ -140,8 +137,16 @@
 </main>
 
 <footer class="text-center py-6 text-xs text-gray-400">
-  © 2024 CoursePlatform. All rights reserved.
+  © 2026 DigitalEd Hub. All rights reserved.
 </footer>
+
+<!-- ERROR TOAST -->
+<div
+  v-if="errorMsg"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-red-600 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg z-50"
+>
+  {{ errorMsg }}
+</div>
 
 </div>
 </template>
@@ -151,6 +156,7 @@ import { ref, computed } from 'vue'
 
 definePageMeta({ layout: false })
 
+// ── Types ──────────────────────────────
 interface Badge { label: string; color: string }
 interface Course {
   id: number
@@ -162,15 +168,21 @@ interface Course {
   badges: Badge[]
 }
 
-const router = useRouter()
+// ── Auth + composables ─────────────────
+const supabase = useSupabaseClient()
+const user     = useSupabaseUser()
+const config   = useRuntimeConfig()
 const { isEnrolled, markEnrolled } = useEnrollment()
 
-const mobileOpen = ref(false)
-const tabs = ['All', 'Beginner', 'Intermediate', 'Advanced']
-const activeTab = ref('All')
+// ── State ──────────────────────────────
+const mobileOpen  = ref(false)
+const tabs        = ['All', 'Beginner', 'Intermediate', 'Advanced']
+const activeTab   = ref('All')
 const currentPage = ref(1)
 const enrollingId = ref<number | null>(null)
+const errorMsg    = ref('')
 
+// ── Courses ────────────────────────────
 const courses: Course[] = [
   {
     id: 1,
@@ -180,7 +192,7 @@ const courses: Course[] = [
     level: 'Beginner',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
     badges: [
-      { label: 'Marketing', color: 'bg-green-100 text-green-700' },
+      { label: 'Marketing',  color: 'bg-green-100 text-green-700'  },
       { label: 'Bestseller', color: 'bg-yellow-100 text-yellow-700' },
     ]
   },
@@ -205,7 +217,7 @@ const courses: Course[] = [
   {
     id: 4,
     title: 'Full-stack Web Development',
-    description: 'Build robust apps with React and Nodejs. Comprehensive guide from frontend to backend.',
+    description: 'Build robust apps with React and Node.js. Comprehensive guide from frontend to backend.',
     price: 10000,
     level: 'Intermediate',
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80',
@@ -236,54 +248,77 @@ const filteredCourses = computed((): Course[] => {
   return courses.filter(c => c.level === activeTab.value)
 })
 
-function handleEnroll(course: Course) {
-  const user = useSupabaseUser()
-
-  // Not logged in → send to register first
-  if (!user.value) {
-    return navigateTo('/register')
+// ── Async work after payment ────────────
+// Separated so callback() stays a plain function (Paystack requirement)
+async function handlePaymentSuccess(course: Course, reference: string) {
+  try {
+    await (supabase as any).from('enrollments').insert({
+      user_id:      user.value!.id,
+      course_id:    course.id,
+      course_title: course.title,
+      amount:       course.price,
+      reference,
+    })
+  } catch (err) {
+    console.error('Enrollment save failed:', err)
   }
 
+  // Save to localStorage so isEnrolled() reflects instantly
+  markEnrolled(course.id)
+
+  // Navigate to lesson
+  await navigateTo(`/courses/${course.id}/learn`)
+}
+
+// ── Enroll handler ─────────────────────
+// Must be a plain (non-async) function so Paystack's
+// callback rule is satisfied
+function handleEnroll(course: Course) {
+
+  // Not logged in → save intended course and send to register
+  if (!user.value) {
+    if (import.meta.client) {
+      sessionStorage.setItem('pendingCourseId', String(course.id))
+    }
+    navigateTo('/register')
+    return
+  }
 
   const PaystackPop = (window as any).PaystackPop
 
   if (!PaystackPop) {
-    console.error('Paystack not loaded yet. Try again.')
-    enrollingId.value = null
+    errorMsg.value = 'Payment is still loading, please try again.'
+    setTimeout(() => { errorMsg.value = '' }, 3000)
     return
   }
 
+  enrollingId.value = course.id
+  errorMsg.value    = ''
+
   const handler = PaystackPop.setup({
-    // ⚠️ Replace with your Paystack public key from dashboard.paystack.com → Settings → API Keys
-    key: 'pk_test_1d269d5342ef028e3be2ff4d8a2325e67f06b549',
-
-    // ⚠️ Replace with the logged-in user's email from your auth state e.g. useAuthStore().user.email
-    email: 'student@example.com',
-
-    amount: course.price * 100, // Paystack uses kobo (Naira × 100)
+    key:      config.public.paystackPublicKey,  // from .env
+    email:    user.value.email!,                // real user email
+    amount:   course.price * 100,               // kobo
     currency: 'NGN',
-    ref: `course_${course.id}_${Date.now()}`,
-
+    ref:      `DEH-${course.id}-${Date.now()}`,
     metadata: {
-      course_id: course.id,
+      course_id:    course.id,
       course_title: course.title,
     },
 
+    // ✅ Plain function — Paystack requires this
     onClose() {
-      // User dismissed the payment popup without paying
       enrollingId.value = null
     },
 
+    // ✅ Plain function — async work moved to handlePaymentSuccess()
     callback(response: { reference: string }) {
-      // ✅ Payment successful
-      // Save enrollment to localStorage so the user can access the course
-      markEnrolled(course.id)
       enrollingId.value = null
-      // Redirect to the learn page using the course id
-      router.push(`/courses/${course.id}/learn`)
+      handlePaymentSuccess(course, response.reference)
     },
   })
 
+  // ✅ Called synchronously inside the click handler — no await before this
   handler.openIframe()
 }
 </script>

@@ -25,30 +25,24 @@
         </p>
 
         <div class="flex gap-4 flex-wrap">
-          <NuxtLink
-            to="/register"
-            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-lg"
+
+          <!-- ✅ Smart button: /courses if logged in, /register if not -->
+          <button
+            @click="exploreCourses"
+            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             Explore Courses →
-          </NuxtLink>
+          </button>
 
-          <NuxtLink
-            to="/register"
-            class="border border-gray-300 text-gray-800 text-sm font-semibold px-6 py-3 rounded-lg"
+          <!-- ✅ Smart button: same logic -->
+          <button
+            @click="exploreCourses"
+            class="border border-gray-300 hover:border-gray-400 text-gray-800 text-sm font-semibold px-6 py-3 rounded-lg transition-colors"
           >
             See How It Works
-          </NuxtLink>
-        </div>
+          </button>
 
-        <!-- <div class="flex items-center gap-3">
-          <div class="flex">
-            <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white"></div>
-            <div class="w-9 h-9 rounded-full bg-gray-400 border-2 border-white -ml-3"></div>
-          </div>
-          <p class="text-sm text-gray-500">
-            <span class="font-semibold text-gray-800">12k+</span> Educators joined
-          </p>
-        </div> -->
+        </div>
 
       </div>
 
@@ -58,6 +52,7 @@
           <img
             src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80"
             class="w-full h-full object-cover"
+            alt="Educators in a classroom"
           >
         </div>
       </div>
@@ -69,16 +64,22 @@
 
 <!-- FEATURED COURSES COMPONENT -->
 
- <!-- TESTEMONIALS SECTION COMPONENT -->
+<!-- TESTIMONIALS SECTION COMPONENT -->
 
- <!-----NEWSLETTER COMPONENT-->
-
+<!-- NEWSLETTER COMPONENT -->
 
 
 </div>
 </template>
 
+<script setup lang="ts">
+const user = useSupabaseUser()
 
-
-
-
+function exploreCourses() {
+  if (user.value) {
+    navigateTo('/courses')    // ✅ logged in  → go straight to courses
+  } else {
+    navigateTo('/register')   // ✅ not logged in → go to register
+  }
+}
+</script>

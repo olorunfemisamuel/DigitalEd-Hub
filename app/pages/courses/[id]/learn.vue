@@ -23,7 +23,7 @@ NAVBAR
     </NuxtLink>
 
     <nav class="hidden md:flex items-center gap-5 text-sm">
-      <NuxtLink to="/courses" class="text-gray-600 hover:text-gray-900">My Courses</NuxtLink>
+      <NuxtLink to="/dashboard" class="text-gray-600 hover:text-gray-900">My Courses</NuxtLink>
       <NuxtLink to="/community" class="text-gray-600 hover:text-gray-900">Explore</NuxtLink>
     </nav>
   </div>
@@ -274,7 +274,7 @@ const lessons = ref<Lesson[]>([
       'Lighting setups for home studios',
     ],
     // Replace with your next Cloudinary URL when uploaded
-    videoUrl: `${CLOUD}/v1773064951/introductoryDigitalEd_Hub_hd24kv.mp4`,
+    videoUrl: `${CLOUD}/v1773069493/digitaledhubstart_esfsqu.mp4`,
   },
   {
     id: 3,

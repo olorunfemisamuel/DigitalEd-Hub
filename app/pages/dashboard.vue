@@ -29,7 +29,7 @@
 
         <!-- Desktop Nav -->
         <div class="hidden md:flex items-center gap-4">
-          <NuxtLink to="/dashboard" class="text-sm font-medium text-gray-700 hover:text-blue-600">My Courses</NuxtLink>
+          <!-- <NuxtLink to="/dashboard" class="text-sm font-medium text-gray-700 hover:text-blue-600">My Courses</NuxtLink> -->
           <NuxtLink to="/community" class="text-sm font-medium text-gray-700 hover:text-blue-600">Community</NuxtLink>
 
           <!-- Avatar + dropdown -->
@@ -98,10 +98,7 @@
         <NuxtLink to="/community" @click="isOpen = false" class="block text-sm text-gray-700 font-medium">Community</NuxtLink>
         <div class="border-t border-gray-100 pt-3">
           <p class="text-xs text-gray-400 mb-2">{{ userEmail }}</p>
-          <button
-            @click="handleLogout"
-            class="flex items-center gap-2 text-sm text-red-500 font-medium"
-          >
+          <button @click="handleLogout" class="flex items-center gap-2 text-sm text-red-500 font-medium">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
               <polyline points="16 17 21 12 16 7"/>
@@ -127,11 +124,23 @@
           <div
             v-for="course in courses"
             :key="course.id"
-            class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            @click="navigateTo(`/courses/${course.id}/learn`)"
+            class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md hover:border-blue-200 transition-all cursor-pointer group"
           >
-            <img :src="course.image" class="w-full h-36 object-cover" :alt="course.title"/>
+            <div class="relative">
+              <img :src="course.image" class="w-full h-36 object-cover" :alt="course.title"/>
+              <!-- Resume overlay on hover -->
+              <div class="absolute inset-0 bg-blue-600/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="flex items-center gap-2 bg-white text-blue-600 text-xs font-bold px-4 py-2 rounded-full shadow">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                  </svg>
+                  Resume Course
+                </div>
+              </div>
+            </div>
             <div class="p-4">
-              <h3 class="text-sm font-bold text-gray-900 mb-1">{{ course.title }}</h3>
+              <h3 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{{ course.title }}</h3>
               <p class="text-xs text-gray-500 mb-3">Instructor: {{ course.instructor }}</p>
               <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-500">Progress</span>
@@ -216,7 +225,7 @@ const userEmail = computed(() => user.value?.email ?? '')
 
 async function handleLogout() {
   await supabase.auth.signOut()
-  await navigateTo('/')          // ← sends to homepage ✅
+  await navigateTo('/')
 }
 
 // ── Data ───────────────────────────────
