@@ -8,17 +8,25 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
- supabase: {
-  redirect: true,           // ← change false to true
+supabase: {
+  redirect: true,
   redirectOptions: {
     login: '/login',
-    callback: '/confirm',   // Supabase processes the token here
-    exclude: ['/'],
+    callback: '/confirm',
+    exclude: [
+      '/',
+      '/register',
+      '/login',
+      '/confirm',
+      '/about',
+      '/courses',
+      '/courses/**',   // ✅ wildcard for individual course pages
+      '/community',
+    ],
   },
   url: process.env.SUPABASE_URL,
   key: process.env.SUPABASE_ANON_KEY,
 },
-
   runtimeConfig: {
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
     paystackSecretKey:  process.env.PAYSTACK_SECRET_KEY,

@@ -127,7 +127,7 @@
       </div>
     </main>
 
-    <!-- ── PAYSTACK MODAL ── -->
+    <!-- PAYSTACK MODAL -->
     <div
       v-if="showPaymentModal"
       class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4"
@@ -135,7 +135,6 @@
     >
       <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
 
-        <!-- Header -->
         <div class="flex items-center justify-between mb-5">
           <h2 class="font-bold text-gray-900">Complete Payment</h2>
           <button @click="showPaymentModal = false" class="text-gray-400 hover:text-gray-600">
@@ -145,7 +144,6 @@
           </button>
         </div>
 
-        <!-- Course summary -->
         <div class="flex gap-3 mb-5 p-3 bg-gray-50 rounded-xl">
           <img :src="course.image" class="w-14 h-14 rounded-lg object-cover flex-shrink-0"/>
           <div>
@@ -155,7 +153,6 @@
           </div>
         </div>
 
-        <!-- Email display -->
         <div class="mb-5">
           <p class="text-xs text-gray-500 mb-1">Paying as</p>
           <p class="text-sm font-semibold text-gray-800 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-200">
@@ -163,10 +160,8 @@
           </p>
         </div>
 
-        <!-- Error message -->
         <p v-if="paymentError" class="text-red-500 text-xs mb-4 text-center">{{ paymentError }}</p>
 
-        <!-- Pay button -->
         <button
           @click="initializePaystack"
           :disabled="isPaying"
@@ -178,9 +173,7 @@
           {{ isPaying ? 'Opening Paystack...' : `Pay ${course.price} →` }}
         </button>
 
-        <p class="text-center text-xs text-gray-400 mt-3">
-          🔒 Secured by Paystack
-        </p>
+        <p class="text-center text-xs text-gray-400 mt-3">🔒 Secured by Paystack</p>
       </div>
     </div>
 
@@ -202,7 +195,7 @@ interface CourseDetail {
   id: number
   title: string
   price: string
-  amountKobo: number   // Paystack uses kobo (₦1,000 = 100000 kobo)
+  amountKobo: number
   author: string
   rating: string
   image: string
@@ -212,7 +205,7 @@ interface CourseDetail {
 }
 
 // ── Route ──────────────────────────────
-const route = useRoute()
+const route    = useRoute()
 const courseId = Number(route.params.id)
 
 // ── Auth ───────────────────────────────
@@ -230,9 +223,7 @@ const showPaymentModal = ref(false)
 const paymentError     = ref('')
 const isEnrolled       = ref(false)
 
-// ── Courses DB ─────────────────────────
-// In production this would come from Supabase.
-// For now it's local — matches FeatureCards.vue ids.
+// ── Courses ────────────────────────────
 const allCourses: CourseDetail[] = [
   {
     id: 1,
@@ -251,10 +242,10 @@ const allCourses: CourseDetail[] = [
     ],
     lessons: [
       { title: 'Introduction to Digital Pedagogy', duration: '12:30' },
-      { title: 'AI Tools for Educators', duration: '18:00' },
-      { title: 'Designing Interactive Lessons', duration: '22:15' },
-      { title: 'Digital Assessment Strategies', duration: '15:45' },
-      { title: 'Building Your Digital Workflow', duration: '20:00' },
+      { title: 'AI Tools for Educators',           duration: '18:00' },
+      { title: 'Designing Interactive Lessons',    duration: '22:15' },
+      { title: 'Digital Assessment Strategies',    duration: '15:45' },
+      { title: 'Building Your Digital Workflow',   duration: '20:00' },
     ],
   },
   {
@@ -273,11 +264,11 @@ const allCourses: CourseDetail[] = [
       'Review and iterate your curriculum',
     ],
     lessons: [
-      { title: 'Curriculum Foundations', duration: '14:00' },
-      { title: 'Mapping Learning Outcomes', duration: '16:30' },
-      { title: 'Designing Assessments', duration: '19:00' },
-      { title: 'Global Standards Overview', duration: '12:00' },
-      { title: 'Iteration and Review', duration: '11:45' },
+      { title: 'Curriculum Foundations',      duration: '14:00' },
+      { title: 'Mapping Learning Outcomes',   duration: '16:30' },
+      { title: 'Designing Assessments',       duration: '19:00' },
+      { title: 'Global Standards Overview',   duration: '12:00' },
+      { title: 'Iteration and Review',        duration: '11:45' },
     ],
   },
   {
@@ -296,11 +287,11 @@ const allCourses: CourseDetail[] = [
       'Build a positive learning culture',
     ],
     lessons: [
-      { title: 'The Leader Educator', duration: '10:00' },
-      { title: 'Classroom Dynamics', duration: '13:30' },
-      { title: 'Mentoring Colleagues', duration: '15:00' },
-      { title: 'Building Learning Culture', duration: '17:00' },
-      { title: 'Sustaining Leadership', duration: '09:45' },
+      { title: 'The Leader Educator',        duration: '10:00' },
+      { title: 'Classroom Dynamics',         duration: '13:30' },
+      { title: 'Mentoring Colleagues',       duration: '15:00' },
+      { title: 'Building Learning Culture',  duration: '17:00' },
+      { title: 'Sustaining Leadership',      duration: '09:45' },
     ],
   },
   {
@@ -320,10 +311,10 @@ const allCourses: CourseDetail[] = [
     ],
     lessons: [
       { title: 'What is Student Engagement?', duration: '08:30' },
-      { title: 'Gamification Basics', duration: '14:00' },
-      { title: 'Handling Disengagement', duration: '11:15' },
-      { title: 'Student-Centred Design', duration: '16:00' },
-      { title: 'Measuring Engagement', duration: '12:30' },
+      { title: 'Gamification Basics',         duration: '14:00' },
+      { title: 'Handling Disengagement',      duration: '11:15' },
+      { title: 'Student-Centred Design',      duration: '16:00' },
+      { title: 'Measuring Engagement',        duration: '12:30' },
     ],
   },
   {
@@ -343,10 +334,10 @@ const allCourses: CourseDetail[] = [
     ],
     lessons: [
       { title: 'Your Knowledge as a Product', duration: '13:00' },
-      { title: 'Pricing Strategies', duration: '15:30' },
-      { title: 'Social Media Marketing', duration: '20:00' },
-      { title: 'Payment Integration', duration: '18:00' },
-      { title: 'Scaling Your Course', duration: '14:45' },
+      { title: 'Pricing Strategies',          duration: '15:30' },
+      { title: 'Social Media Marketing',      duration: '20:00' },
+      { title: 'Payment Integration',         duration: '18:00' },
+      { title: 'Scaling Your Course',         duration: '14:45' },
     ],
   },
 ]
@@ -357,13 +348,18 @@ const course = computed((): CourseDetail =>
 
 // ── Check enrollment on mount ───────────
 onMounted(async () => {
-  if (!user.value) return
+  // Use getSession() — more reliable than useSupabaseUser() on first load
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+  if (!currentUser) return
+
   const { data } = await supabase
     .from('enrollments')
     .select('id')
-    .eq('user_id', user.value.id)
+    .eq('user_id', currentUser.id)
     .eq('course_id', courseId)
     .maybeSingle()
+
   isEnrolled.value = !!data
 })
 
@@ -373,14 +369,14 @@ function handleEnroll() {
     navigateTo(`/courses/${courseId}/learn`)
     return
   }
-  paymentError.value   = ''
+  paymentError.value    = ''
   showPaymentModal.value = true
 }
 
 // ── Paystack ───────────────────────────
-// AFTER — fully synchronous, browser allows the popup
-function initializePaystack() {
-  isPaying.value    = true
+// ── Paystack ───────────────────────────
+async function initializePaystack() {
+  isPaying.value     = true
   paymentError.value = ''
 
   const PaystackPop = (window as any).PaystackPop
@@ -391,9 +387,22 @@ function initializePaystack() {
     return
   }
 
+  // ✅ Use getSession() instead of user.value — reliable even before hydration
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+
+  if (!currentUser) {
+    paymentError.value = 'You must be logged in to enroll.'
+    isPaying.value = false
+    return
+  }
+
+  const userId      = currentUser.id
+  const payingEmail = currentUser.email ?? ''
+
   const handler = PaystackPop.setup({
     key:      config.public.paystackPublicKey,
-    email:    userEmail.value,
+    email:    payingEmail,
     amount:   course.value.amountKobo,
     currency: 'NGN',
     ref:      `DEH-${courseId}-${Date.now()}`,
@@ -401,41 +410,38 @@ function initializePaystack() {
       course_id:    courseId,
       course_title: course.value.title,
     },
-
     onClose() {
       isPaying.value = false
     },
-
-    // callback can be async — it's not a click handler
-  callback(response: { reference: string }) {
-  isPaying.value = false
-  // Call the async function without await — it runs in background
-  onPaymentSuccess(response.reference)
-},
+    callback(response: { reference: string }) {
+      isPaying.value = false
+      onPaymentSuccess(response.reference, userId)
+    },
   })
 
-  // ✅ Called synchronously — no await before this line
   handler.openIframe()
 }
 
 // ── After payment success ──────────────
-async function onPaymentSuccess(reference: string) {
-  isLoading.value = true
+// userId passed as parameter — never read user.value here
+// because this runs outside Vue's reactivity scope
+async function onPaymentSuccess(reference: string, userId: string) {
+  isLoading.value        = true
   showPaymentModal.value = false
 
   try {
-    // Save enrollment to Supabase
-    const { error } = await supabase.from('enrollments').insert({
-      user_id:      user.value!.id,
+    const { data, error } = await supabase.from('enrollments').insert({
+      user_id:      userId,
       course_id:    courseId,
       course_title: course.value.title,
-      amount:       course.value.amountKobo / 100,  // store in naira
+      amount:       course.value.amountKobo / 100,  // store in Naira
       reference,
-    })
+    }).select()
 
     if (error) throw error
 
-    // Redirect to dashboard
+    // Small delay so Supabase write is committed before dashboard reads
+    await new Promise(resolve => setTimeout(resolve, 500))
     await navigateTo('/dashboard')
 
   } catch (err) {

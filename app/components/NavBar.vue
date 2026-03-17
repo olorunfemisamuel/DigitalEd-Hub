@@ -17,12 +17,12 @@
 
       <!-- Desktop Nav Links -->
       <ul class="hidden md:flex items-center gap-7">
-        <li>
+        <li v-if="!user">
           <NuxtLink to="/" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors" active-class="text-blue-600">
             Home
           </NuxtLink>
         </li>
-        <li>
+        <li v-if="!user">
           <NuxtLink to="/courses" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors" active-class="text-blue-600">
             Courses
           </NuxtLink>
@@ -39,7 +39,7 @@
         </li>
       </ul>
 
-      <!-- ── DESKTOP RIGHT SIDE ── -->
+      <!-- Desktop Right Side -->
       <div class="hidden md:flex items-center gap-3">
 
         <!-- Logged OUT -->
@@ -76,72 +76,143 @@
 
       </div>
 
-      <!-- Mobile Hamburger -->
-      <button
-        @click="isOpen = !isOpen"
-        class="md:hidden text-gray-700 focus:outline-none"
-        aria-label="Toggle menu"
-      >
-        <svg v-if="!isOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <svg v-else class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
+      <!-- Mobile Right: Get Started / Avatar + Hamburger -->
+      <div class="md:hidden flex items-center gap-3">
 
-    </nav>
+        <!-- Get Started — only when logged OUT -->
+        <NuxtLink
+          v-if="!user"
+          to="/register"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+        >
+          Get Started
+        </NuxtLink>
 
-    <!-- ── MOBILE MENU ── -->
-    <div v-show="isOpen" class="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-1">
+        <!-- User initial avatar — only when logged IN -->
+        <div
+          v-if="user"
+          class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold"
+        >
+          {{ user.email?.charAt(0).toUpperCase() }}
+        </div>
 
-      <!-- Nav links — always visible -->
-      <NuxtLink to="/"          @click="isOpen = false" class="block text-sm text-gray-700 font-medium py-2 hover:text-blue-600">Home</NuxtLink>
-      <NuxtLink to="/courses"   @click="isOpen = false" class="block text-sm text-gray-700 font-medium py-2 hover:text-blue-600">Courses</NuxtLink>
-      <NuxtLink to="/community" @click="isOpen = false" class="block text-sm text-gray-700 font-medium py-2 hover:text-blue-600">Community</NuxtLink>
-      <NuxtLink to="/about"     @click="isOpen = false" class="block text-sm text-gray-700 font-medium py-2 hover:text-blue-600">About</NuxtLink>
-
-      <div class="pt-3 border-t border-gray-100 flex flex-col gap-3">
-
-        <!-- Logged OUT -->
-        <template v-if="!user">
-          <NuxtLink to="/login" @click="isOpen = false"
-            class="text-sm text-gray-700 font-medium hover:text-blue-600">
-            Login
-          </NuxtLink>
-          <NuxtLink to="/register" @click="isOpen = false"
-            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg text-center transition-colors">
-            Get Started →
-          </NuxtLink>
-        </template>
-
-        <!-- Logged IN -->
-        <template v-else>
-          <div class="flex items-center gap-2 py-1">
-            <div class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
-              {{ user.email?.charAt(0).toUpperCase() }}
-            </div>
-            <span class="text-sm text-gray-500 truncate">{{ user.email }}</span>
-          </div>
-          <NuxtLink to="/dashboard" @click="isOpen = false"
-            class="text-sm text-gray-700 font-medium hover:text-blue-600">
-            Dashboard
-          </NuxtLink>
-          <button
-            @click="handleLogout"
-            class="flex items-center gap-2 text-sm text-red-500 font-semibold py-2"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Log out
-          </button>
-        </template>
+        <!-- Hamburger -->
+        <button
+          @click="openMenu"
+          class="text-gray-700 focus:outline-none"
+          aria-label="Toggle menu"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
 
       </div>
-    </div>
+    </nav>
+
+    <!-- ── MOBILE SIDEBAR OVERLAY ── -->
+    <Teleport to="body">
+
+      <!-- Backdrop -->
+      <Transition name="fade">
+        <div
+          v-if="isOpen"
+          class="fixed inset-0 bg-black/40 z-[60] md:hidden"
+          @click="closeMenu"
+        />
+      </Transition>
+
+      <!-- Sidebar panel — slides in from right -->
+      <Transition name="slide">
+        <div
+          v-if="isOpen"
+          class="fixed top-0 right-0 h-full w-72 bg-white z-[70] md:hidden shadow-2xl flex flex-col"
+        >
+          <!-- Sidebar header -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+                  <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+                  <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+                  <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+                </svg>
+              </div>
+              <span class="text-blue-600 font-bold text-sm tracking-tight">DigitalEd Hub</span>
+            </div>
+            <!-- Close button -->
+            <button @click="closeMenu" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Nav links -->
+          <div class="flex flex-col px-6 py-4 gap-1 flex-1 overflow-y-auto">
+
+            <!-- Home: only when logged OUT -->
+            <NuxtLink v-if="!user" to="/" @click="closeMenu"
+              class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+              Home
+            </NuxtLink>
+            <NuxtLink to="/courses" @click="closeMenu"
+              class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+              Courses
+            </NuxtLink>
+            <NuxtLink to="/community" @click="closeMenu"
+              class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+              Community
+            </NuxtLink>
+            <NuxtLink to="/about" @click="closeMenu"
+              class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+              About
+            </NuxtLink>
+
+          </div>
+
+          <!-- Bottom auth section -->
+          <div class="px-6 py-4 border-t border-gray-100 flex flex-col gap-3">
+
+            <!-- Logged OUT -->
+            <template v-if="!user">
+              <NuxtLink to="/login" @click="closeMenu"
+                class="text-sm text-gray-700 font-medium hover:text-blue-600">
+                Login
+              </NuxtLink>
+            </template>
+
+            <!-- Logged IN -->
+            <template v-else>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                  {{ user.email?.charAt(0).toUpperCase() }}
+                </div>
+                <span class="text-sm text-gray-500 truncate">{{ user.email }}</span>
+              </div>
+              <NuxtLink to="/dashboard" @click="closeMenu"
+                class="text-sm text-gray-700 font-medium hover:text-blue-600">
+                Dashboard
+              </NuxtLink>
+              <button
+                @click="handleLogout"
+                class="flex items-center gap-2 text-sm text-red-500 font-semibold py-1"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Log out
+              </button>
+            </template>
+
+          </div>
+        </div>
+      </Transition>
+
+    </Teleport>
 
   </header>
 </template>
@@ -151,9 +222,41 @@ const isOpen   = ref(false)
 const supabase = useSupabaseClient()
 const user     = useSupabaseUser()
 
-async function handleLogout() {
+function openMenu() {
+  isOpen.value = true
+  document.body.style.overflow = 'hidden'  // ← lock scroll
+}
+
+function closeMenu() {
   isOpen.value = false
+  document.body.style.overflow = ''  // ← restore scroll
+}
+
+async function handleLogout() {
+  closeMenu()
   await supabase.auth.signOut()
   await navigateTo('/')
 }
 </script>
+
+<style scoped>
+/* Backdrop fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Sidebar slide from right */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
+}
+</style>
