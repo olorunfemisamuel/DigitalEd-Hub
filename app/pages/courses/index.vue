@@ -3,7 +3,9 @@
 
 <!-- NAVBAR -->
 <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
+    <!-- Logo -->
     <NuxtLink to="/" class="flex items-center gap-2">
       <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -15,27 +17,185 @@
       </div>
       <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
     </NuxtLink>
-    <nav class="hidden md:flex items-center gap-8 ml-8">
-      <NuxtLink to="/courses" class="text-gray-500 text-sm hover:text-gray-800">Courses</NuxtLink>
-    </nav>
-    <div class="ml-auto flex items-center gap-4">
-      <button class="text-gray-400 hover:text-gray-600">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
-      </button>
-      <img src="https://i.pravatar.cc/32?img=5" class="w-8 h-8 rounded-full cursor-pointer"/>
-      <button class="md:hidden text-gray-500" @click="mobileOpen = !mobileOpen">☰</button>
+
+    <!-- Desktop nav links — logged out only -->
+    <!-- Desktop nav links — logged out only -->
+<ul v-if="!user" class="hidden md:flex items-center gap-7">
+  <li><NuxtLink to="/" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Home</NuxtLink></li>
+  <!-- Hide Courses link when already on the courses page -->
+  <li v-if="route.path !== '/courses'">
+    <NuxtLink to="/courses" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Courses</NuxtLink>
+  </li>
+  <li><NuxtLink to="/community" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Community</NuxtLink></li>
+  <li><NuxtLink to="/about" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">About</NuxtLink></li>
+</ul>
+
+    <!-- Right side -->
+    <div class="flex items-center gap-3">
+
+      <!-- LOGGED OUT -->
+      <template v-if="!user">
+
+        <!-- Desktop: Login + Get Started -->
+        <NuxtLink to="/login"
+          class="hidden md:block text-sm text-gray-600 font-medium hover:text-blue-600 transition-colors">
+          Login
+        </NuxtLink>
+        <NuxtLink to="/register"
+          class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors">
+          Get Started
+        </NuxtLink>
+
+        <!-- Mobile: Get Started + Hamburger -->
+        <NuxtLink to="/register"
+          class="md:hidden bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+          Get Started
+        </NuxtLink>
+        <button @click="openMenu" class="md:hidden text-gray-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+
+      </template>
+
+      <!-- LOGGED IN -->
+      <template v-else>
+
+        <!-- Notification bell -->
+        <button class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+
+        <!-- Email initial avatar -->
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+          {{ user.email?.charAt(0).toUpperCase() }}
+        </div>
+
+        <!-- Hamburger -->
+        <button @click="openMenu" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+      </template>
+
     </div>
   </div>
-  <div v-if="mobileOpen" class="md:hidden border-t border-gray-200 bg-white px-6 py-4">
-    <nav class="flex flex-col gap-4 text-sm">
-      <NuxtLink to="/dashboard">Dashboard</NuxtLink>
-      <NuxtLink to="/courses" class="text-blue-600 font-semibold">Courses</NuxtLink>
-    </nav>
-  </div>
 </header>
+
+<!-- SIDEBAR -->
+<Teleport to="body">
+
+  <!-- Backdrop -->
+  <Transition name="fade">
+    <div
+      v-if="sidebarOpen"
+      class="fixed inset-0 bg-black/40 z-[60]"
+      @click="closeMenu"
+    />
+  </Transition>
+
+  <!-- Panel -->
+  <Transition name="slide">
+    <div
+      v-if="sidebarOpen"
+      class="fixed top-0 right-0 h-full w-72 bg-white z-[70] shadow-2xl flex flex-col"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+              <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+            </svg>
+          </div>
+          <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
+        </div>
+        <button @click="closeMenu" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- User info — logged in only -->
+      <div v-if="user" class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+          {{ user.email?.charAt(0).toUpperCase() }}
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-gray-900 truncate">{{ user.email }}</p>
+          <p class="text-xs text-gray-400">Student</p>
+        </div>
+      </div>
+
+      <!-- Nav links -->
+      <div class="flex flex-col px-6 py-4 gap-1 flex-1">
+        <NuxtLink to="/" @click="closeMenu"
+          class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+          Home
+        </NuxtLink>
+        <NuxtLink to="/courses" @click="closeMenu"
+          class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+          Courses
+        </NuxtLink>
+        <NuxtLink to="/community" @click="closeMenu"
+          class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+          Community
+        </NuxtLink>
+        <NuxtLink to="/about" @click="closeMenu"
+          class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+          About
+        </NuxtLink>
+
+        <!-- Dashboard — logged in only -->
+        <NuxtLink v-if="user" to="/dashboard" @click="closeMenu"
+          class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+          Dashboard
+        </NuxtLink>
+      </div>
+
+      <!-- Bottom auth section -->
+      <div class="px-6 py-4 border-t border-gray-100">
+
+        <!-- Logged OUT — Login link -->
+        <template v-if="!user">
+          <NuxtLink to="/login" @click="closeMenu"
+            class="text-sm text-gray-700 font-medium hover:text-blue-600">
+            Login
+          </NuxtLink>
+        </template>
+
+        <!-- Logged IN — Logout button -->
+        <template v-else>
+          <button
+            @click="handleLogout"
+            class="flex items-center gap-2 text-sm text-red-500 font-semibold"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Log out
+          </button>
+        </template>
+
+      </div>
+    </div>
+  </Transition>
+
+</Teleport>
 
 <!-- MAIN -->
 <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
@@ -88,7 +248,6 @@
         <div class="flex items-center justify-between">
           <span class="text-gray-900 font-bold text-sm">₦{{ course.price.toLocaleString() }}</span>
 
-          <!-- Already enrolled → go to learn page -->
           <NuxtLink
             v-if="isEnrolled(course.id)"
             :to="`/courses/${course.id}/learn`"
@@ -97,7 +256,6 @@
             Continue →
           </NuxtLink>
 
-          <!-- Not enrolled → Paystack -->
           <button
             v-else
             @click="handleEnroll(course)"
@@ -152,11 +310,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+
+const route = useRoute()
 
 definePageMeta({ layout: false })
 
-// ── Types ──────────────────────────────
 interface Badge { label: string; color: string }
 interface Course {
   id: number
@@ -168,21 +327,52 @@ interface Course {
   badges: Badge[]
 }
 
-// ── Auth + composables ─────────────────
-const supabase = useSupabaseClient()
-const user     = useSupabaseUser()
-const config   = useRuntimeConfig()
-const { isEnrolled, markEnrolled } = useEnrollment()
-
-// ── State ──────────────────────────────
-const mobileOpen  = ref(false)
+const supabase    = useSupabaseClient()
+const user        = useSupabaseUser()
+const config      = useRuntimeConfig()
+const sidebarOpen = ref(false)
 const tabs        = ['All', 'Beginner', 'Intermediate', 'Advanced']
 const activeTab   = ref('All')
 const currentPage = ref(1)
 const enrollingId = ref<number | null>(null)
 const errorMsg    = ref('')
+const enrolledIds = ref<number[]>([])
 
-// ── Courses ────────────────────────────
+function openMenu() {
+  sidebarOpen.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+function closeMenu() {
+  sidebarOpen.value = false
+  document.body.style.overflow = ''
+}
+
+async function handleLogout() {
+  closeMenu()
+  await supabase.auth.signOut()
+  await navigateTo('/')
+}
+
+onMounted(async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+  if (!currentUser) return
+
+  const { data } = await supabase
+    .from('enrollments')
+    .select('course_id')
+    .eq('user_id', currentUser.id)
+
+  if (data) {
+    enrolledIds.value = data.map((e: any) => Number(e.course_id))
+  }
+})
+
+function isEnrolled(courseId: number): boolean {
+  return enrolledIds.value.includes(courseId)
+}
+
 const courses: Course[] = [
   {
     id: 1,
@@ -248,34 +438,37 @@ const filteredCourses = computed((): Course[] => {
   return courses.filter(c => c.level === activeTab.value)
 })
 
-// ── Async work after payment ────────────
-// Separated so callback() stays a plain function (Paystack requirement)
 async function handlePaymentSuccess(course: Course, reference: string) {
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+  if (!currentUser) return
+
   try {
-    await (supabase as any).from('enrollments').insert({
-      user_id:      user.value!.id,
+    const { error } = await supabase.from('enrollments').insert({
+      user_id:      currentUser.id,
       course_id:    course.id,
       course_title: course.title,
       amount:       course.price,
       reference,
     })
+
+    if (error) {
+      console.error('Enrollment save failed:', error)
+      errorMsg.value = 'Payment received but enrollment failed. Contact support.'
+      setTimeout(() => { errorMsg.value = '' }, 4000)
+      return
+    }
+
+    enrolledIds.value.push(course.id)
+
   } catch (err) {
     console.error('Enrollment save failed:', err)
   }
 
-  // Save to localStorage so isEnrolled() reflects instantly
-  markEnrolled(course.id)
-
-  // Navigate to lesson
-  await navigateTo(`/courses/${course.id}/learn`)
+  await navigateTo('/dashboard')
 }
 
-// ── Enroll handler ─────────────────────
-// Must be a plain (non-async) function so Paystack's
-// callback rule is satisfied
 function handleEnroll(course: Course) {
-
-  // Not logged in → save intended course and send to register
   if (!user.value) {
     if (import.meta.client) {
       sessionStorage.setItem('pendingCourseId', String(course.id))
@@ -296,29 +489,44 @@ function handleEnroll(course: Course) {
   errorMsg.value    = ''
 
   const handler = PaystackPop.setup({
-    key:      config.public.paystackPublicKey,  // from .env
-    email:    user.value.email!,                // real user email
-    amount:   course.price * 100,               // kobo
+    key:      config.public.paystackPublicKey,
+    email:    user.value.email!,
+    amount:   course.price * 100,
     currency: 'NGN',
     ref:      `DEH-${course.id}-${Date.now()}`,
     metadata: {
       course_id:    course.id,
       course_title: course.title,
     },
-
-    // ✅ Plain function — Paystack requires this
     onClose() {
       enrollingId.value = null
     },
-
-    // ✅ Plain function — async work moved to handlePaymentSuccess()
     callback(response: { reference: string }) {
       enrollingId.value = null
       handlePaymentSuccess(course, response.reference)
     },
   })
 
-  // ✅ Called synchronously inside the click handler — no await before this
   handler.openIframe()
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
+}
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
+}
+</style>

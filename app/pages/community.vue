@@ -3,38 +3,184 @@
 
     <!-- NAVBAR -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div class="max-w-2xl mx-auto px-6 h-12 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-          </svg>
-          <span class="font-bold text-gray-900 text-sm">DigitalEd Hub Community</span>
-        </div>
+      <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
 
-        <div class="flex items-center gap-4">
-          <nav class="hidden md:flex items-center gap-5">
+        <!-- Logo -->
+        <NuxtLink to="/" class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+              <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+              <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+            </svg>
+          </div>
+          <span class="font-bold text-blue-600 text-sm">DigitalEd Hub</span>
+        </NuxtLink>
+
+        <!-- Desktop nav -->
+        <div class="hidden md:flex items-center gap-7">
+
+          <!-- Logged OUT nav links -->
+          <template v-if="!user">
+            <NuxtLink to="/" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Home</NuxtLink>
+            <NuxtLink to="/courses" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Courses</NuxtLink>
+            <NuxtLink to="/community" class="text-blue-600 text-sm font-semibold">Community</NuxtLink>
+            <NuxtLink to="/about" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">About</NuxtLink>
+          </template>
+
+          <!-- Logged IN nav links -->
+          <template v-else>
             <NuxtLink to="/community" class="text-blue-600 text-sm font-semibold">Home</NuxtLink>
             <NuxtLink to="/community/discussion" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">Discussion</NuxtLink>
             <NuxtLink to="/community/members" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">Members</NuxtLink>
-          </nav>
-          <img src="https://i.pravatar.cc/32?img=5" class="w-7 h-7 rounded-full cursor-pointer"/>
-          <button class="md:hidden text-gray-500" @click="mobileOpen = !mobileOpen">
-            <svg v-if="!mobileOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-            <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </template>
+
+        </div>
+
+        <!-- Desktop right side -->
+        <div class="hidden md:flex items-center gap-3">
+
+          <!-- Logged OUT -->
+          <template v-if="!user">
+            <NuxtLink to="/login" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Login</NuxtLink>
+            <NuxtLink to="/register" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors">
+              Get Started
+            </NuxtLink>
+          </template>
+
+          <!-- Logged IN -->
+          <template v-else>
+            <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer">
+              {{ user.email?.charAt(0).toUpperCase() }}
+            </div>
+          </template>
+
+        </div>
+
+        <!-- Mobile right: Get Started (logged out) or Avatar (logged in) + Hamburger -->
+        <div class="md:hidden flex items-center gap-3">
+
+          <!-- Logged OUT: Get Started -->
+          <NuxtLink
+            v-if="!user"
+            to="/register"
+            class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+          >
+            Get Started
+          </NuxtLink>
+
+          <!-- Logged IN: Avatar -->
+          <div
+            v-if="user"
+            class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold"
+          >
+            {{ user.email?.charAt(0).toUpperCase() }}
+          </div>
+
+          <!-- Hamburger -->
+          <button @click="openMenu" class="text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
-        </div>
-      </div>
 
-      <div v-if="mobileOpen" class="md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col gap-4">
-        <NuxtLink to="/community" @click="mobileOpen = false" class="text-blue-600 text-sm font-semibold">Home</NuxtLink>
-        <NuxtLink to="/community/discussion" @click="mobileOpen = false" class="text-gray-600 text-sm">Discussion</NuxtLink>
-        <NuxtLink to="/community/members" @click="mobileOpen = false" class="text-gray-600 text-sm">Members</NuxtLink>
+        </div>
+
       </div>
     </header>
+
+    <!-- SIDEBAR -->
+    <Teleport to="body">
+
+      <Transition name="fade">
+        <div
+          v-if="sidebarOpen"
+          class="fixed inset-0 bg-black/40 z-[60]"
+          @click="closeMenu"
+        />
+      </Transition>
+
+      <Transition name="slide">
+        <div
+          v-if="sidebarOpen"
+          class="fixed top-0 right-0 h-full w-72 bg-white z-[70] shadow-2xl flex flex-col"
+        >
+          <!-- Sidebar header -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <NuxtLink to="/" @click="closeMenu" class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+                  <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+                  <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+                  <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+                </svg>
+              </div>
+              <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
+            </NuxtLink>
+            <button @click="closeMenu" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- User info — logged in only -->
+          <div v-if="user" class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              {{ user.email?.charAt(0).toUpperCase() }}
+            </div>
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">{{ user.email }}</p>
+              <p class="text-xs text-gray-400">Student</p>
+            </div>
+          </div>
+
+          <!-- Nav links -->
+          <div class="flex flex-col px-6 py-4 gap-1 flex-1">
+
+            <!-- Logged OUT links -->
+            <template v-if="!user">
+              <NuxtLink to="/" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Home</NuxtLink>
+              <NuxtLink to="/courses" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Courses</NuxtLink>
+              <NuxtLink to="/community" @click="closeMenu" class="text-sm text-blue-600 font-semibold py-2.5 border-b border-gray-50">Community</NuxtLink>
+              <NuxtLink to="/about" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">About</NuxtLink>
+            </template>
+
+            <!-- Logged IN links -->
+            <template v-else>
+              <NuxtLink to="/dashboard" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Dashboard</NuxtLink>
+              <NuxtLink to="/community" @click="closeMenu" class="text-sm text-blue-600 font-semibold py-2.5 border-b border-gray-50">Community</NuxtLink>
+              <NuxtLink to="/community/discussion" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Discussion</NuxtLink>
+              <NuxtLink to="/community/members" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Members</NuxtLink>
+            </template>
+
+          </div>
+
+          <!-- Bottom auth section -->
+          <div class="px-6 py-4 border-t border-gray-100">
+            <template v-if="!user">
+              <NuxtLink to="/login" @click="closeMenu" class="text-sm text-gray-700 font-medium hover:text-blue-600">
+                Login
+              </NuxtLink>
+            </template>
+            <template v-else>
+              <button @click="handleLogout" class="flex items-center gap-2 text-sm text-red-500 font-semibold">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Log out
+              </button>
+            </template>
+          </div>
+
+        </div>
+      </Transition>
+
+    </Teleport>
 
     <!-- MAIN FEED -->
     <main class="flex-1 max-w-2xl mx-auto w-full px-6 py-6 flex flex-col gap-4">
@@ -42,7 +188,9 @@
       <!-- Composer -->
       <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
         <div class="flex items-start gap-3 mb-3">
-          <img src="https://i.pravatar.cc/36?img=5" class="w-9 h-9 rounded-full flex-shrink-0 mt-1"/>
+          <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 mt-1">
+            {{ user?.email?.charAt(0).toUpperCase() ?? '?' }}
+          </div>
           <textarea
             v-model="newPost"
             placeholder="Share something with the community..."
@@ -75,7 +223,6 @@
         :key="post.id"
         class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 transition-all"
       >
-        <!-- Header -->
         <div class="flex items-start gap-3 mb-3">
           <img :src="post.avatar" class="w-9 h-9 rounded-full flex-shrink-0 object-cover"/>
           <div>
@@ -85,18 +232,13 @@
                 {{ post.badge }}
               </span>
             </div>
-            <!-- Live updating time -->
             <p class="text-xs text-gray-400 mt-0.5">{{ formatTime(post.created_at) }}</p>
           </div>
         </div>
 
-        <!-- Text -->
         <p class="text-sm text-gray-600 leading-relaxed mb-4">{{ post.text }}</p>
 
-        <!-- Actions -->
         <div class="flex items-center gap-5 pt-3 border-t border-gray-100">
-
-          <!-- Like button — reactive -->
           <button
             @click="toggleLike(post)"
             class="flex items-center gap-1.5 transition-colors duration-200 group"
@@ -116,7 +258,6 @@
             <span class="text-xs font-medium tabular-nums">{{ post.likes }}</span>
           </button>
 
-          <!-- Reply button — toggles reply box -->
           <button
             @click="toggleReply(post.id)"
             class="flex items-center gap-1.5 transition-colors duration-200"
@@ -127,13 +268,9 @@
             </svg>
             <span class="text-xs font-medium tabular-nums">{{ post.comments }}</span>
           </button>
-
         </div>
 
-        <!-- Reply box — appears when clicked -->
         <div v-if="activeReply === post.id" class="mt-4 flex flex-col gap-2">
-
-          <!-- Existing replies -->
           <div
             v-for="reply in post.replies"
             :key="reply.id"
@@ -147,9 +284,10 @@
             </div>
           </div>
 
-          <!-- New reply input -->
           <div class="flex gap-2 items-start mt-1">
-            <img src="https://i.pravatar.cc/28?img=5" class="w-7 h-7 rounded-full flex-shrink-0 mt-1"/>
+            <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+              {{ user?.email?.charAt(0).toUpperCase() ?? '?' }}
+            </div>
             <input
               v-model="replyText"
               placeholder="Write a reply..."
@@ -181,7 +319,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 definePageMeta({ layout: false })
 
-// ── Types ──────────────────────────────
 interface Reply {
   id: string
   name: string
@@ -205,8 +342,7 @@ interface Post {
   user_id?: string
 }
 
-// ── State ──────────────────────────────
-const mobileOpen  = ref(false)
+const sidebarOpen = ref(false)
 const newPost     = ref('')
 const replyText   = ref('')
 const isPosting   = ref(false)
@@ -214,14 +350,24 @@ const isLoading   = ref(true)
 const activeReply = ref<string | null>(null)
 const posts       = ref<Post[]>([])
 
-// ── Auth ───────────────────────────────
 const supabase = useSupabaseClient()
 const user     = useSupabaseUser()
 
-// ── Seed posts (always visible, static) ──
+function openMenu() {
+  sidebarOpen.value = true
+  document.body.style.overflow = 'hidden'
+}
 
+function closeMenu() {
+  sidebarOpen.value = false
+  document.body.style.overflow = ''
+}
 
-// ── Load posts from Supabase ────────────
+async function handleLogout() {
+  closeMenu()
+  await supabase.auth.signOut()
+  await navigateTo('/')
+}
 
 onMounted(async () => {
   try {
@@ -251,16 +397,23 @@ onMounted(async () => {
   isLoading.value = false
 })
 
-// ── Submit new post ─────────────────────
+let timeInterval: ReturnType<typeof setInterval>
+
+onMounted(() => {
+  timeInterval = setInterval(() => {
+    posts.value = [...posts.value]
+  }, 30_000)
+})
+
+onBeforeUnmount(() => clearInterval(timeInterval))
+
 async function submitPost() {
   if (!newPost.value.trim() || isPosting.value) return
   isPosting.value = true
-
   const text = newPost.value.trim()
 
   try {
     if (user.value) {
-      // Save to Supabase
       const { data, error } = await supabase.from('community_posts').insert({
         user_id:    user.value.id,
         user_email: user.value.email,
@@ -270,7 +423,7 @@ async function submitPost() {
       }).select().single()
 
       if (!error && data) {
-        const newEntry: Post = {
+        posts.value.unshift({
           id:         data.id,
           name:       user.value.email?.split('@')[0] ?? 'You',
           avatar:     `https://i.pravatar.cc/36?u=${user.value.id}`,
@@ -283,11 +436,9 @@ async function submitPost() {
           likedByMe:  false,
           replies:    [],
           user_id:    user.value.id,
-        }
-        posts.value.unshift(newEntry)
+        })
       }
     } else {
-      // Not logged in — add locally only (won't persist)
       posts.value.unshift({
         id:         `local-${Date.now()}`,
         name:       'You',
@@ -303,7 +454,6 @@ async function submitPost() {
       })
     }
   } catch {
-    // Still add locally if Supabase fails
     posts.value.unshift({
       id:         `local-${Date.now()}`,
       name:       'You',
@@ -323,13 +473,11 @@ async function submitPost() {
   isPosting.value = false
 }
 
-// ── Like toggle ─────────────────────────
 async function toggleLike(post: Post) {
   const wasLiked = post.likedByMe
   post.likedByMe = !wasLiked
   post.likes += wasLiked ? -1 : 1
 
-  // Persist to Supabase for real posts
   if (!post.id.startsWith('seed-') && !post.id.startsWith('local-')) {
     await supabase
       .from('community_posts')
@@ -338,7 +486,6 @@ async function toggleLike(post: Post) {
   }
 }
 
-// ── Reply toggle & submit ───────────────
 function toggleReply(postId: string) {
   activeReply.value = activeReply.value === postId ? null : postId
   replyText.value   = ''
@@ -361,29 +508,24 @@ function submitReply(post: Post) {
   replyText.value = ''
 }
 
-// ── Live time updates every 30s ─────────
-let timeInterval: ReturnType<typeof setInterval>
-
-onMounted(() => {
-  timeInterval = setInterval(() => {
-    // Trigger reactivity by touching a post — Vue picks up formatTime() re-renders
-    posts.value = [...posts.value]
-  }, 30_000)
-})
-
-onBeforeUnmount(() => clearInterval(timeInterval))
-
-// ── Format time (live) ──────────────────
 function formatTime(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-
-  if (diff < 60)                return 'Just now'
-  if (diff < 3600)              return `${Math.floor(diff / 60)}m ago`
-  if (diff < 86400)             return `${Math.floor(diff / 3600)}h ago`
-  if (diff < 86400 * 7)        return `${Math.floor(diff / 86400)}d ago`
-
-  return new Date(dateStr).toLocaleDateString('en-NG', {
-    day: 'numeric', month: 'short'
-  })
+  if (diff < 60)        return 'Just now'
+  if (diff < 3600)      return `${Math.floor(diff / 60)}m ago`
+  if (diff < 86400)     return `${Math.floor(diff / 3600)}h ago`
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}d ago`
+  return new Date(dateStr).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active { transition: opacity 0.25s ease; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
+
+.slide-enter-active,
+.slide-leave-active { transition: transform 0.3s ease; }
+.slide-enter-from,
+.slide-leave-to { transform: translateX(100%); }
+</style>

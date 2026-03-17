@@ -10,17 +10,17 @@
       <div class="absolute inset-0 bg-gradient-to-br from-blue-700/80 via-blue-600/60 to-blue-400/40"></div>
 
       <!-- Logo -->
-      <div class="absolute top-6 left-6 flex items-center gap-2 z-10">
-        <div class="w-6 h-6 rounded-md bg-white/20 backdrop-blur flex items-center justify-center">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
-            <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
-            <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
-            <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
-          </svg>
-        </div>
-        <span class="text-white font-semibold text-sm">DigitalEd Hub</span>
-      </div>
+      <NuxtLink to="/" class="absolute top-6 left-6 flex items-center gap-2 z-10">
+  <div class="w-6 h-6 rounded-md bg-white/20 backdrop-blur flex items-center justify-center">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+      <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+      <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+      <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+    </svg>
+  </div>
+  <span class="text-white font-semibold text-sm">DigitalEd Hub</span>
+</NuxtLink>
 
       <!-- Text -->
       <div class="absolute bottom-0 left-0 p-10 z-10 max-w-md">
@@ -45,20 +45,21 @@
     <div class="flex-1 bg-[#F8FAFC] flex flex-col">
 
       <!-- ── Mobile top bar (logo) — only visible on mobile ── -->
-      <div class="md:hidden flex items-center justify-between px-6 pt-6 pb-2">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
-              <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
-              <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
-              <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
-            </svg>
-          </div>
-          <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
-        </div>
-        <NuxtLink to="/login" class="text-xs text-blue-600 font-semibold">Log in</NuxtLink>
-      </div>
+   
+<div class="md:hidden flex items-center justify-between px-6 pt-6 pb-2">
+  <NuxtLink to="/" class="flex items-center gap-2">
+    <div class="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+        <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+        <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+        <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+      </svg>
+    </div>
+    <span class="text-blue-600 font-bold text-sm">DigitalEd Hub</span>
+  </NuxtLink>
+  <NuxtLink to="/login" class="text-xs text-blue-600 font-semibold">Log in</NuxtLink>
+</div>
 
       <!-- Form area -->
       <div class="flex-1 flex items-center justify-center px-6 py-8 md:px-10">
