@@ -1,9 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex font-sans">
 
-    <!-- SIDEBAR -->
-    <aside class="w-52 bg-white border-r border-gray-100 flex flex-col fixed top-0 left-0 h-full z-40">
-
+    <!-- SIDEBAR — hidden on mobile, fixed on desktop -->
+    <aside
+      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+      class="fixed top-0 left-0 h-full w-56 bg-white border-r border-gray-100 flex flex-col z-50 transition-transform duration-300 md:translate-x-0"
+    >
       <!-- Logo -->
       <div class="px-5 py-4 border-b border-gray-100">
         <div class="flex items-center gap-2">
@@ -21,20 +23,20 @@
 
       <!-- Nav -->
       <nav class="flex flex-col px-3 py-4 gap-1 flex-1">
-        <NuxtLink to="/admin/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-semibold">
+        <NuxtLink to="/admin/dashboard" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-semibold">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
             <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
           </svg>
           Overview
         </NuxtLink>
-        <NuxtLink to="/admin/courses" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
+        <NuxtLink to="/admin/courses" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
           </svg>
           Courses
         </NuxtLink>
-        <NuxtLink to="/admin/students" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
+        <NuxtLink to="/admin/students" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
@@ -42,7 +44,7 @@
           </svg>
           Students
         </NuxtLink>
-        <NuxtLink to="/admin/analytics" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
+        <NuxtLink to="/admin/analytics" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="20" x2="18" y2="10"/>
             <line x1="12" y1="20" x2="12" y2="4"/>
@@ -50,7 +52,7 @@
           </svg>
           Analytics
         </NuxtLink>
-        <NuxtLink to="/admin/settings" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
+        <NuxtLink to="/admin/settings" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -58,17 +60,31 @@
           Settings
         </NuxtLink>
       </nav>
-
     </aside>
 
+    <!-- Sidebar overlay (mobile) -->
+    <div
+      v-if="sidebarOpen"
+      class="fixed inset-0 bg-black/40 z-40 md:hidden"
+      @click="sidebarOpen = false"
+    />
+
     <!-- MAIN CONTENT -->
-    <div class="flex-1 ml-52 flex flex-col min-h-screen">
+    <div class="flex-1 md:ml-56 flex flex-col min-h-screen">
 
       <!-- TOP NAVBAR -->
-      <header class="bg-white border-b border-gray-100 h-14 flex items-center justify-between px-6 sticky top-0 z-30">
-        <h1 class="text-sm font-semibold text-gray-800">Admin Dashboard</h1>
+      <header class="bg-white border-b border-gray-100 h-14 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
         <div class="flex items-center gap-3">
-          <div class="text-right">
+          <!-- Hamburger (mobile only) -->
+          <button @click="sidebarOpen = true" class="md:hidden text-gray-500 focus:outline-none">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <h1 class="text-sm font-semibold text-gray-800">Admin Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden sm:block">
             <p class="text-xs font-semibold text-gray-800">Admin User</p>
             <p class="text-[10px] text-gray-400">Super Administrator</p>
           </div>
@@ -79,81 +95,65 @@
       </header>
 
       <!-- PAGE BODY -->
-      <main class="flex-1 px-6 py-7">
+      <main class="flex-1 px-4 md:px-6 py-6">
 
         <!-- Greeting -->
-        <div class="mb-7">
-          <h2 class="text-2xl font-extrabold text-gray-900">Morning, Admin</h2>
+        <div class="mb-6">
+          <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Morning, Admin</h2>
           <p class="text-sm text-gray-400 mt-0.5">Here is what's happening with DigitalEd Hub today.</p>
         </div>
 
+        <!-- STAT CARDS — 2 cols mobile, 4 cols desktop -->
         <!-- STAT CARDS -->
-        <div class="grid grid-cols-4 gap-4 mb-7">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
 
-          <!-- Total Students -->
-          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div class="flex items-start justify-between mb-3">
-              <p class="text-xs text-gray-400 font-medium">Total Students</p>
-              <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                </svg>
-              </div>
-            </div>
-            <p class="text-2xl font-extrabold text-gray-900">1,200</p>
-            <p class="text-[11px] text-green-500 font-medium mt-1">↑ 12% from last month</p>
-          </div>
+  <!-- Total Students -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
+    <p class="text-xs text-gray-400 font-medium mb-2">Total Students</p>
 
-          <!-- Total Courses -->
-          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div class="flex items-start justify-between mb-3">
-              <p class="text-xs text-gray-400 font-medium">Total Courses</p>
-              <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                </svg>
-              </div>
-            </div>
-            <p class="text-2xl font-extrabold text-gray-900">18</p>
-            <p class="text-[11px] text-gray-400 font-medium mt-1">18 categories online</p>
-          </div>
+    <p class="text-xl md:text-2xl font-extrabold text-gray-900">
+      {{ stats?.totalStudents?.toLocaleString() ?? '0' }}
+    </p>
 
-          <!-- Total Earnings -->
-          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div class="flex items-start justify-between mb-3">
-              <p class="text-xs text-gray-400 font-medium">Total Earnings</p>
-              <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-              </div>
-            </div>
-            <p class="text-2xl font-extrabold text-gray-900">₦450,000</p>
-            <p class="text-[11px] text-blue-500 font-medium mt-1">→ Next payout: Friday</p>
-          </div>
+    <p class="text-[11px] text-green-500 font-medium mt-1">
+      ↑ {{ stats?.newThisMonth ?? 0 }} new this month
+    </p>
+  </div>
 
-          <!-- Active Community Posts -->
-          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div class="flex items-start justify-between mb-3">
-              <p class="text-xs text-gray-400 font-medium">Active Community Posts</p>
-              <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-              </div>
-            </div>
-            <p class="text-2xl font-extrabold text-gray-900">23</p>
-            <p class="text-[11px] text-gray-400 font-medium mt-1">8 new since yesterday</p>
-          </div>
+  <!-- Total Courses -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
+    <p class="text-xs text-gray-400 font-medium mb-2">Total Courses</p>
 
-        </div>
+    <p class="text-xl md:text-2xl font-extrabold text-gray-900">
+      {{ stats?.totalCourses ?? 0 }}
+    </p>
+  </div>
 
-        <!-- CHART + LATEST INTERACTIONS -->
-        <div class="grid grid-cols-3 gap-5">
+  <!-- Total Earnings -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
+    <p class="text-xs text-gray-400 font-medium mb-2">Total Earnings</p>
+
+    <p class="text-xl md:text-2xl font-extrabold text-gray-900">
+      ₦{{ stats?.totalEarnings?.toLocaleString() ?? '0' }}
+    </p>
+  </div>
+
+  <!-- Community Posts -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
+    <p class="text-xs text-gray-400 font-medium mb-2">Community Posts</p>
+
+    <p class="text-xl md:text-2xl font-extrabold text-gray-900">
+      {{ stats?.communityPosts ?? 0 }}
+    </p>
+  </div>
+
+</div>
+
+        <!-- CHART + LATEST INTERACTIONS — stacked on mobile, side by side on desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
 
           <!-- Enrollment Growth Chart -->
-          <div class="col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div class="md:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
             <div class="flex items-center justify-between mb-1">
               <div>
                 <h3 class="text-sm font-bold text-gray-900">Enrollment Growth</h3>
@@ -165,8 +165,10 @@
             </div>
 
             <!-- Bar Chart -->
-            <div class="mt-5 flex items-end gap-2 h-36">
-              <div v-for="(bar, i) in chartBars" :key="i"
+            <div class="mt-5 flex items-end gap-1.5 md:gap-2 h-32 md:h-36">
+              <div
+                v-for="(bar, i) in chartBars"
+                :key="i"
                 class="flex-1 rounded-t-md transition-all"
                 :class="bar.active ? 'bg-blue-600' : 'bg-blue-200'"
                 :style="{ height: bar.height + '%' }"
@@ -174,52 +176,38 @@
             </div>
 
             <!-- X axis labels -->
-            <div class="flex gap-2 mt-2">
-              <div v-for="(bar, i) in chartBars" :key="i" class="flex-1 text-center text-[9px] text-gray-400">
+            <div class="flex gap-1.5 md:gap-2 mt-2">
+              <div v-for="(bar, i) in chartBars" :key="i" class="flex-1 text-center text-[8px] md:text-[9px] text-gray-400">
                 {{ bar.label }}
               </div>
             </div>
           </div>
 
           <!-- Latest Interactions -->
-          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
             <h3 class="text-sm font-bold text-gray-900 mb-4">Latest Interactions</h3>
 
-            <div class="flex flex-col gap-4">
+            <<div class="flex flex-col gap-4">
 
-              <div class="flex gap-3 items-start">
-                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p class="text-xs font-semibold text-gray-800">Adaeze J. joined Python Basics</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">3 minutes ago</p>
-                </div>
-              </div>
+  <div
+    v-for="item in latestInteractions"
+    :key="item.id"
+    class="flex gap-3 items-start"
+  >
+    <div :class="item.color" class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"></div>
 
-              <div class="flex gap-3 items-start">
-                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p class="text-xs font-semibold text-gray-800">New forum post in "UI Design"</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">17 min ago</p>
-                </div>
-              </div>
+    <div>
+      <p class="text-xs font-semibold text-gray-800">
+        {{ item.text }}
+      </p>
 
-              <div class="flex gap-3 items-start">
-                <div class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p class="text-xs font-semibold text-gray-800">Payment confirmed: ₦15,500</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">1 hour ago</p>
-                </div>
-              </div>
+      <p class="text-[10px] text-gray-400 mt-0.5">
+        {{ formatTime(item.created_at) }}
+      </p>
+    </div>
+  </div>
 
-              <div class="flex gap-3 items-start">
-                <div class="w-2 h-2 rounded-full bg-yellow-400 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p class="text-xs font-semibold text-gray-800">Course "Digital Marketing" updated</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">2 hours ago</p>
-                </div>
-              </div>
-
-            </div>
+</div>
 
             <button class="mt-5 text-xs text-blue-600 font-semibold hover:underline">
               View all activity →
@@ -235,23 +223,102 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
 definePageMeta({ layout: false })
 
-const chartBars = [
-  { height: 35, label: '1',  active: false },
-  { height: 50, label: '3',  active: false },
-  { height: 40, label: '5',  active: false },
-  { height: 60, label: '7',  active: false },
-  { height: 55, label: '9',  active: false },
-  { height: 70, label: '11', active: false },
-  { height: 65, label: '13', active: false },
-  { height: 80, label: '15', active: false },
-  { height: 75, label: '17', active: false },
-  { height: 90, label: '19', active: true  },
-  { height: 85, label: '21', active: true  },
-  { height: 95, label: '23', active: true  },
-  { height: 88, label: '25', active: true  },
-  { height: 100, label: '27', active: true },
-  { height: 92, label: '30', active: true  },
-]
+const user      = useSupabaseUser()
+const { isAdmin } = useIsAdmin()
+const sidebarOpen = ref(false)
+
+
+type AdminStats = {
+  totalStudents: number
+  newThisMonth: number
+  totalCourses: number
+  totalEarnings: number
+  communityPosts: number
+
+  enrollmentGrowth: { created_at: string }[]
+  latestPosts: {
+    id: string
+    user_email: string
+    created_at: string
+  }[]
+  latestEnrollments: {
+    id: string
+    user_email: string
+    amount: number
+    created_at: string
+  }[]
+}
+
+// ✅ Redirect non-admins out
+onMounted(() => {
+  if (!isAdmin.value) navigateTo('/admin/login')
+})
+
+// ✅ Fetch live stats
+const { data: stats } = await useFetch<AdminStats>('/api/admin/stats')
+
+// ✅ Build chart bars from real enrollment growth data
+const chartBars = computed(() => {
+  if (!stats.value?.enrollmentGrowth?.length) return []
+
+  // Group enrollments by day number in the last 30 days
+  const dayCounts: Record<number, number> = {}
+  const now = new Date()
+
+  stats.value.enrollmentGrowth.forEach((e: { created_at: string }) => {
+    const diffDays = Math.ceil(
+      (now.getTime() - new Date(e.created_at).getTime()) / (1000 * 60 * 60 * 24)
+    )
+    const dayNum = 30 - diffDays
+    if (dayNum >= 0) dayCounts[dayNum] = (dayCounts[dayNum] ?? 0) + 1
+  })
+
+  const max = Math.max(...Object.values(dayCounts), 1)
+
+  return Array.from({ length: 15 }, (_, i) => {
+    const day = Math.round(i * 2)
+    return {
+      label:  String(day + 1),
+      height: Math.max(10, Math.round(((dayCounts[day] ?? 0) / max) * 100)),
+      active: i >= 9,
+    }
+  })
+})
+
+// ✅ Merge latest interactions from posts + enrollments
+const latestInteractions = computed(() => {
+  const posts = (stats.value?.latestPosts ?? []).map((p: any) => ({
+    id:         p.id,
+    type:       'post',
+    text:       `New post by ${p.user_email?.split('@')[0] ?? 'someone'}`,
+    created_at: p.created_at,
+    color:      'bg-blue-500',
+  }))
+
+  const enrollments = (stats.value?.latestEnrollments ?? []).map((e: any) => ({
+    id:         e.id,
+    type:       'enrollment',
+    text:       `${e.user_email?.split('@')[0] ?? 'Someone'} enrolled — ₦${Number(e.amount ?? 0).toLocaleString()}`,
+    created_at: e.created_at,
+    color:      'bg-green-500',
+  }))
+
+  return [...posts, ...enrollments]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 6)
+})
+
+function formatTime(dateStr: string): string {
+  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+  if (diff < 60)    return 'Just now'
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+  return `${Math.floor(diff / 86400)}d ago`
+}
+
+
 </script>

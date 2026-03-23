@@ -179,7 +179,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-definePageMeta({ layout: false })
+definePageMeta({
+  middleware: [],  // ✅ same fix for student login
+  layout: false,
+})
 
 const errorMsg        = ref('')
 const successMsg      = ref('')

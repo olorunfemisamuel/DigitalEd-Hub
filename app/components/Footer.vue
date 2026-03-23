@@ -30,7 +30,7 @@
         <div class="flex items-center gap-3 mt-1">
           <!-- Instagram / Community -->
            <a
-      href="#"
+      href="https://www.instagram.com/digitaledhub/?hl=en"
       target="_blank"
       aria-label="Instagram"
       class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-300 transition-colors duration-200"

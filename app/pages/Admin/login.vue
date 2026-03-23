@@ -139,7 +139,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-definePageMeta({ layout: false })
+definePageMeta({
+  middleware: [],  // ✅ opts this page out of ALL global middleware
+  layout: false,
+})
 
 const email        = ref('')
 const password     = ref('')
@@ -159,6 +162,19 @@ async function handleLogin() {
   isLoading.value = true
   errorMsg.value  = ''
 
+  // ✅ Step 1: Check against your hardcoded admin credentials server-side
+  try {
+    await $fetch('/api/admin-login', {
+      method: 'POST',
+      body: { email: email.value, password: password.value },
+    })
+  } catch {
+    errorMsg.value  = 'Invalid credentials. Please try again.'
+    isLoading.value = false
+    return
+  }
+
+  // ✅ Step 2: If credentials match, sign in with Supabase normally
   const { error } = await supabase.auth.signInWithPassword({
     email:    email.value,
     password: password.value,

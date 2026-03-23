@@ -1,15 +1,31 @@
 export default defineNuxtRouteMiddleware(async (to) => {
+  // ✅ Exit immediately for all public/auth pages
+  const publicRoutes = [
+    '/admin/login',
+    '/login',
+    '/register',
+    '/community',
+    '/about',
+    '/confirm',
+    '/reset-password',
+  ]
+
+  if (publicRoutes.some(route => to.path === route || to.path.startsWith(route + '/'))) return
+
   const user = useSupabaseUser()
   const supabase = useSupabaseClient()
 
-  // Wait for Supabase to finish processing the OAuth callback
-  // This handles the case where user lands back from Google redirect
   if (!user.value) {
     const { data } = await supabase.auth.getSession()
+
     if (!data.session) {
-      const protectedRoutes = ['/dashboard', '/courses/']
-      const isProtected = protectedRoutes.some(route => to.path.startsWith(route))
-      if (isProtected) return navigateTo('/login')
+      if (to.path.startsWith('/admin')) {
+        return navigateTo('/admin/login')
+      }
+
+      if (to.path.startsWith('/dashboard') || to.path.startsWith('/courses')) {
+        return navigateTo('/login')
+      }
     }
   }
 })
