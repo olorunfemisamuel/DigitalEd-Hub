@@ -26,7 +26,6 @@
 
         <div class="flex gap-4 flex-wrap">
 
-          <!-- ✅ Smart button: /courses if logged in, /register if not -->
           <button
             @click="exploreCourses"
             class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-lg transition-colors"
@@ -34,7 +33,6 @@
             Explore Courses →
           </button>
 
-          <!-- ✅ Smart button: same logic -->
           <button
             @click="exploreCourses"
             class="border border-gray-300 hover:border-gray-400 text-gray-800 text-sm font-semibold px-6 py-3 rounded-lg transition-colors"
@@ -73,13 +71,7 @@
 </template>
 
 <script setup lang="ts">
-const user = useSupabaseUser()
-
 function exploreCourses() {
-  if (user.value) {
-    navigateTo('/courses')    // ✅ logged in  → go straight to courses
-  } else {
-    navigateTo('/register')   // ✅ not logged in → go to register
-  }
+  navigateTo('/courses')
 }
 </script>

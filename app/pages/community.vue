@@ -20,48 +20,36 @@
 
         <!-- Desktop nav -->
         <div class="hidden md:flex items-center gap-7">
-
-          <!-- Logged OUT nav links -->
           <template v-if="!user">
             <NuxtLink to="/" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Home</NuxtLink>
             <NuxtLink to="/courses" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Courses</NuxtLink>
             <NuxtLink to="/community" class="text-blue-600 text-sm font-semibold">Community</NuxtLink>
             <NuxtLink to="/about" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">About</NuxtLink>
           </template>
-
-          <!-- Logged IN nav links -->
           <template v-else>
             <NuxtLink to="/community" class="text-blue-600 text-sm font-semibold">Home</NuxtLink>
             <NuxtLink to="/community/discussion" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">Discussion</NuxtLink>
             <NuxtLink to="/community/members" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">Members</NuxtLink>
           </template>
-
         </div>
 
         <!-- Desktop right side -->
         <div class="hidden md:flex items-center gap-3">
-
-          <!-- Logged OUT -->
           <template v-if="!user">
             <NuxtLink to="/login" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors">Login</NuxtLink>
             <NuxtLink to="/register" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors">
               Get Started
             </NuxtLink>
           </template>
-
-          <!-- Logged IN -->
           <template v-else>
             <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer">
               {{ user.email?.charAt(0).toUpperCase() }}
             </div>
           </template>
-
         </div>
 
-        <!-- Mobile right: Get Started (logged out) or Avatar (logged in) + Hamburger -->
+        <!-- Mobile right -->
         <div class="md:hidden flex items-center gap-3">
-
-          <!-- Logged OUT: Get Started -->
           <NuxtLink
             v-if="!user"
             to="/register"
@@ -69,22 +57,17 @@
           >
             Get Started
           </NuxtLink>
-
-          <!-- Logged IN: Avatar -->
           <div
             v-if="user"
             class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold"
           >
             {{ user.email?.charAt(0).toUpperCase() }}
           </div>
-
-          <!-- Hamburger -->
           <button @click="openMenu" class="text-gray-600 focus:outline-none">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
-
         </div>
 
       </div>
@@ -92,21 +75,11 @@
 
     <!-- SIDEBAR -->
     <Teleport to="body">
-
       <Transition name="fade">
-        <div
-          v-if="sidebarOpen"
-          class="fixed inset-0 bg-black/40 z-[60]"
-          @click="closeMenu"
-        />
+        <div v-if="sidebarOpen" class="fixed inset-0 bg-black/40 z-[60]" @click="closeMenu"/>
       </Transition>
-
       <Transition name="slide">
-        <div
-          v-if="sidebarOpen"
-          class="fixed top-0 right-0 h-full w-72 bg-white z-[70] shadow-2xl flex flex-col"
-        >
-          <!-- Sidebar header -->
+        <div v-if="sidebarOpen" class="fixed top-0 right-0 h-full w-72 bg-white z-[70] shadow-2xl flex flex-col">
           <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <NuxtLink to="/" @click="closeMenu" class="flex items-center gap-2">
               <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
@@ -125,8 +98,6 @@
               </svg>
             </button>
           </div>
-
-          <!-- User info — logged in only -->
           <div v-if="user" class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
             <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
               {{ user.email?.charAt(0).toUpperCase() }}
@@ -136,34 +107,23 @@
               <p class="text-xs text-gray-400">Student</p>
             </div>
           </div>
-
-          <!-- Nav links -->
           <div class="flex flex-col px-6 py-4 gap-1 flex-1">
-
-            <!-- Logged OUT links -->
             <template v-if="!user">
               <NuxtLink to="/" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Home</NuxtLink>
               <NuxtLink to="/courses" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Courses</NuxtLink>
               <NuxtLink to="/community" @click="closeMenu" class="text-sm text-blue-600 font-semibold py-2.5 border-b border-gray-50">Community</NuxtLink>
               <NuxtLink to="/about" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">About</NuxtLink>
             </template>
-
-            <!-- Logged IN links -->
             <template v-else>
               <NuxtLink to="/dashboard" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Dashboard</NuxtLink>
               <NuxtLink to="/community" @click="closeMenu" class="text-sm text-blue-600 font-semibold py-2.5 border-b border-gray-50">Community</NuxtLink>
               <NuxtLink to="/community/discussion" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Discussion</NuxtLink>
               <NuxtLink to="/community/members" @click="closeMenu" class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">Members</NuxtLink>
             </template>
-
           </div>
-
-          <!-- Bottom auth section -->
           <div class="px-6 py-4 border-t border-gray-100">
             <template v-if="!user">
-              <NuxtLink to="/login" @click="closeMenu" class="text-sm text-gray-700 font-medium hover:text-blue-600">
-                Login
-              </NuxtLink>
+              <NuxtLink to="/login" @click="closeMenu" class="text-sm text-gray-700 font-medium hover:text-blue-600">Login</NuxtLink>
             </template>
             <template v-else>
               <button @click="handleLogout" class="flex items-center gap-2 text-sm text-red-500 font-semibold">
@@ -176,20 +136,18 @@
               </button>
             </template>
           </div>
-
         </div>
       </Transition>
-
     </Teleport>
 
     <!-- MAIN FEED -->
     <main class="flex-1 max-w-2xl mx-auto w-full px-6 py-6 flex flex-col gap-4">
 
-      <!-- Composer -->
-      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+      <!-- Composer — logged in only -->
+      <div v-if="user" class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
         <div class="flex items-start gap-3 mb-3">
           <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 mt-1">
-            {{ user?.email?.charAt(0).toUpperCase() ?? '?' }}
+            {{ user.email?.charAt(0).toUpperCase() }}
           </div>
           <textarea
             v-model="newPost"
@@ -210,6 +168,17 @@
             {{ isPosting ? 'Posting...' : 'Post' }}
           </button>
         </div>
+      </div>
+
+      <!-- Guest banner — logged out only -->
+      <div v-else class="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+        <p class="text-sm text-blue-700 font-medium">Join the community to share posts and reply to others.</p>
+        <NuxtLink
+          to="/register"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+        >
+          Get Started
+        </NuxtLink>
       </div>
 
       <!-- Loading -->
@@ -239,7 +208,9 @@
         <p class="text-sm text-gray-600 leading-relaxed mb-4">{{ post.text }}</p>
 
         <div class="flex items-center gap-5 pt-3 border-t border-gray-100">
+          <!-- Like — logged in only -->
           <button
+            v-if="user"
             @click="toggleLike(post)"
             class="flex items-center gap-1.5 transition-colors duration-200 group"
             :class="post.likedByMe ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'"
@@ -258,7 +229,17 @@
             <span class="text-xs font-medium tabular-nums">{{ post.likes }}</span>
           </button>
 
+          <!-- Like count only — logged out -->
+          <div v-else class="flex items-center gap-1.5 text-gray-300">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span class="text-xs font-medium tabular-nums">{{ post.likes }}</span>
+          </div>
+
+          <!-- Reply toggle — logged in only -->
           <button
+            v-if="user"
             @click="toggleReply(post.id)"
             class="flex items-center gap-1.5 transition-colors duration-200"
             :class="activeReply === post.id ? 'text-blue-600' : 'text-gray-400 hover:text-blue-500'"
@@ -268,9 +249,18 @@
             </svg>
             <span class="text-xs font-medium tabular-nums">{{ post.comments }}</span>
           </button>
+
+          <!-- Comment count only — logged out -->
+          <div v-else class="flex items-center gap-1.5 text-gray-300">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span class="text-xs font-medium tabular-nums">{{ post.comments }}</span>
+          </div>
         </div>
 
-        <div v-if="activeReply === post.id" class="mt-4 flex flex-col gap-2">
+        <!-- Reply section — logged in only -->
+        <div v-if="user && activeReply === post.id" class="mt-4 flex flex-col gap-2">
           <div
             v-for="reply in post.replies"
             :key="reply.id"
@@ -283,10 +273,9 @@
               <p class="text-[10px] text-gray-400 mt-1">{{ formatTime(reply.created_at) }}</p>
             </div>
           </div>
-
           <div class="flex gap-2 items-start mt-1">
             <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
-              {{ user?.email?.charAt(0).toUpperCase() ?? '?' }}
+              {{ user.email?.charAt(0).toUpperCase() }}
             </div>
             <input
               v-model="replyText"
@@ -413,60 +402,32 @@ async function submitPost() {
   const text = newPost.value.trim()
 
   try {
-    if (user.value) {
-      const { data, error } = await supabase.from('community_posts').insert({
-        user_id:    user.value.id,
-        user_email: user.value.email,
-        text,
-        likes:    0,
-        comments: 0,
-      }).select().single()
+    const { data, error } = await supabase.from('community_posts').insert({
+      user_id:    user.value!.id,
+      user_email: user.value!.email,
+      text,
+      likes:    0,
+      comments: 0,
+    }).select().single()
 
-      if (!error && data) {
-        posts.value.unshift({
-          id:         data.id,
-          name:       user.value.email?.split('@')[0] ?? 'You',
-          avatar:     `https://i.pravatar.cc/36?u=${user.value.id}`,
-          badge:      'Educator',
-          badgeClass: 'bg-gray-100 text-gray-600',
-          text:       data.text,
-          likes:      0,
-          comments:   0,
-          created_at: data.created_at,
-          likedByMe:  false,
-          replies:    [],
-          user_id:    user.value.id,
-        })
-      }
-    } else {
+    if (!error && data) {
       posts.value.unshift({
-        id:         `local-${Date.now()}`,
-        name:       'You',
-        avatar:     'https://i.pravatar.cc/36?img=5',
+        id:         data.id,
+        name:       user.value!.email?.split('@')[0] ?? 'You',
+        avatar:     `https://i.pravatar.cc/36?u=${user.value!.id}`,
         badge:      'Educator',
         badgeClass: 'bg-gray-100 text-gray-600',
-        text,
+        text:       data.text,
         likes:      0,
         comments:   0,
-        created_at: new Date().toISOString(),
+        created_at: data.created_at,
         likedByMe:  false,
         replies:    [],
+        user_id:    user.value!.id,
       })
     }
-  } catch {
-    posts.value.unshift({
-      id:         `local-${Date.now()}`,
-      name:       'You',
-      avatar:     'https://i.pravatar.cc/36?img=5',
-      badge:      'Educator',
-      badgeClass: 'bg-gray-100 text-gray-600',
-      text,
-      likes:      0,
-      comments:   0,
-      created_at: new Date().toISOString(),
-      likedByMe:  false,
-      replies:    [],
-    })
+  } catch (e) {
+    console.error('Failed to post:', e)
   }
 
   newPost.value   = ''
@@ -497,9 +458,7 @@ function submitReply(post: Post) {
   post.replies.push({
     id:         `r-${Date.now()}`,
     name:       user.value?.email?.split('@')[0] ?? 'You',
-    avatar:     user.value
-                  ? `https://i.pravatar.cc/28?u=${user.value.id}`
-                  : 'https://i.pravatar.cc/28?img=5',
+    avatar:     `https://i.pravatar.cc/28?u=${user.value!.id}`,
     text:       replyText.value.trim(),
     created_at: new Date().toISOString(),
   })
