@@ -162,30 +162,20 @@ async function handleLogin() {
   isLoading.value = true
   errorMsg.value  = ''
 
-  // ✅ Step 1: Check against your hardcoded admin credentials server-side
   try {
+    // ✅ Clear any existing Supabase student session first
+    await supabase.auth.signOut()
+
+    // ✅ Then set the admin cookie
     await $fetch('/api/admin-login', {
       method: 'POST',
       body: { email: email.value, password: password.value },
     })
+
+    await navigateTo('/admin/dashboard')
   } catch {
     errorMsg.value  = 'Invalid credentials. Please try again.'
     isLoading.value = false
-    return
   }
-
-  // ✅ Step 2: If credentials match, sign in with Supabase normally
-  const { error } = await supabase.auth.signInWithPassword({
-    email:    email.value,
-    password: password.value,
-  })
-
-  if (error) {
-    errorMsg.value  = 'Invalid credentials. Please try again.'
-    isLoading.value = false
-    return
-  }
-
-  await navigateTo('/admin/dashboard')
 }
 </script>

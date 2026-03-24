@@ -267,7 +267,17 @@ const isOpen   = ref(false)
 const supabase = useSupabaseClient()
 const user     = useSupabaseUser()
 
-const { isAdmin } = useIsAdmin()
+// ✅ Check admin cookie — not Supabase email
+const isAdmin = ref(false)
+
+onMounted(async () => {
+  try {
+    const result = await $fetch<{ isAdmin: boolean }>('/api/admin-check')
+    isAdmin.value = result.isAdmin
+  } catch {
+    isAdmin.value = false
+  }
+})
 
 function openMenu() {
   isOpen.value = true
@@ -281,10 +291,14 @@ function closeMenu() {
 
 async function handleLogout() {
   closeMenu()
-  await supabase.auth.signOut()
   if (isAdmin.value) {
+    // ✅ Admin logout — clear cookie only
+    await $fetch('/api/admin-logout', { method: 'POST' })
+    isAdmin.value = false
     await navigateTo('/admin/login')
   } else {
+    // ✅ Student logout — clear Supabase session
+    await supabase.auth.signOut()
     await navigateTo('/')
   }
 }

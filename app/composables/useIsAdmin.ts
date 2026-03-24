@@ -1,10 +1,18 @@
 export function useIsAdmin() {
-  const user   = useSupabaseUser()
-  const config = useRuntimeConfig()
+  const isAdmin = ref(false)
 
-  const isAdmin = computed(() =>
-    !!user.value && user.value.email === config.public.adminEmail
-  )
+  const checkAdmin = async () => {
+    try {
+      const result = await $fetch<{ isAdmin: boolean }>('/api/admin-check')
+      isAdmin.value = result.isAdmin
+    } catch {
+      isAdmin.value = false
+    }
+  }
 
-  return { isAdmin }
+  if (import.meta.client) {
+    checkAdmin()
+  }
+
+  return { isAdmin, checkAdmin }
 }

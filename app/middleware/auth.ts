@@ -1,5 +1,4 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // ✅ Exit immediately for all public/auth pages
   const publicRoutes = [
     '/admin/login',
     '/login',
@@ -12,17 +11,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (publicRoutes.some(route => to.path === route || to.path.startsWith(route + '/'))) return
 
-  const user = useSupabaseUser()
+  // ✅ Admin routes — protected by cookie check on the page itself
+  // Middleware does NOT handle admin routes at all
+  if (to.path.startsWith('/admin')) return
+
+  // ✅ Student routes — Supabase only
+  const user     = useSupabaseUser()
   const supabase = useSupabaseClient()
 
   if (!user.value) {
     const { data } = await supabase.auth.getSession()
-
     if (!data.session) {
-      if (to.path.startsWith('/admin')) {
-        return navigateTo('/admin/login')
-      }
-
       if (to.path.startsWith('/dashboard') || to.path.startsWith('/courses')) {
         return navigateTo('/login')
       }

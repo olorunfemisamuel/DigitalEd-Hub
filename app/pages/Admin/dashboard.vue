@@ -83,15 +83,32 @@
           </button>
           <h1 class="text-sm font-semibold text-gray-800">Admin Dashboard</h1>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden sm:block">
-            <p class="text-xs font-semibold text-gray-800">Admin User</p>
-            <p class="text-[10px] text-gray-400">Super Administrator</p>
-          </div>
-          <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-            A
-          </div>
-        </div>
+       <!-- TOP NAVBAR right side -->
+<div class="flex items-center gap-3">
+  <div class="text-right hidden sm:block">
+   <p class="text-xs font-semibold text-gray-800">
+  {{ adminEmail?.split('@')[0] }}
+</p>
+<div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+  {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
+</div>
+    <p class="text-[10px] text-gray-400">Super Administrator</p>
+  </div>
+  <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+   {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
+  </div>
+  <button
+    @click="handleLogout"
+    class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-500 border border-red-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+  >
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Log out
+  </button>
+</div>
       </header>
 
       <!-- PAGE BODY -->
@@ -227,11 +244,22 @@ import { ref, computed, onMounted } from 'vue'
 
 definePageMeta({ layout: false })
 
-const user      = useSupabaseUser()
+const supabase    = useSupabaseClient() 
+const config  = useRuntimeConfig()
+
+// ✅ Use config email, NOT Supabase user
+const adminEmail = config.public.adminEmail
 const { isAdmin } = useIsAdmin()
 const sidebarOpen = ref(false)
 
-
+//handle Logout function
+async function handleLogout() {
+  // ✅ Clear admin cookie
+  await $fetch('/api/admin-logout', { method: 'POST' })
+  // ✅ Also sign out of Supabase to clear the student session
+  await supabase.auth.signOut()
+  await navigateTo('/admin/login')
+}
 type AdminStats = {
   totalStudents: number
   newThisMonth: number
@@ -254,8 +282,11 @@ type AdminStats = {
 }
 
 // ✅ Redirect non-admins out
-onMounted(() => {
-  if (!isAdmin.value) navigateTo('/admin/login')
+onMounted(async () => {
+  const result = await $fetch<{ isAdmin: boolean }>('/api/admin-check')
+  if (!result.isAdmin) {
+    await navigateTo('/admin/login')
+  }
 })
 
 // ✅ Fetch live stats
@@ -299,13 +330,13 @@ const latestInteractions = computed(() => {
     color:      'bg-blue-500',
   }))
 
-  const enrollments = (stats.value?.latestEnrollments ?? []).map((e: any) => ({
-    id:         e.id,
-    type:       'enrollment',
-    text:       `${e.user_email?.split('@')[0] ?? 'Someone'} enrolled — ₦${Number(e.amount ?? 0).toLocaleString()}`,
-    created_at: e.created_at,
-    color:      'bg-green-500',
-  }))
+const enrollments = (stats.value?.latestEnrollments ?? []).map((e: any) => ({
+  id:         e.id,
+  type:       'enrollment',
+  text:       `${e.user_email?.split('@')[0] ?? 'Someone'} enrolled in ${e.course_title} — ₦${Number(e.amount ?? 0).toLocaleString()}`,
+  created_at: e.created_at,
+  color:      'bg-green-500',
+}))
 
   return [...posts, ...enrollments]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())

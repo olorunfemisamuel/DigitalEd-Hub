@@ -352,7 +352,7 @@ const userEmail = computed(() => user.value?.email ?? '')
 
 async function handleLogout() {
   await supabase.auth.signOut()
-  await navigateTo('/')
+  await navigateTo('/admin/login')
 }
 
 // ── Avatar color ────────────────────────
