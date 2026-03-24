@@ -163,10 +163,7 @@ async function handleLogin() {
   errorMsg.value  = ''
 
   try {
-    // ✅ Clear any existing Supabase student session first
-    await supabase.auth.signOut()
-
-    // ✅ Then set the admin cookie
+    // ✅ Just set the admin cookie — no signOut call
     await $fetch('/api/admin-login', {
       method: 'POST',
       body: { email: email.value, password: password.value },
