@@ -35,6 +35,7 @@ export default defineNuxtConfig({
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
     paystackSecretKey:  process.env.PAYSTACK_SECRET_KEY,
     public: {
+       supabaseUrl:      process.env.SUPABASE_URL ?? '', 
       paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY ?? '',
         adminEmail:        process.env.ADMIN_EMAIL ?? '',
     }

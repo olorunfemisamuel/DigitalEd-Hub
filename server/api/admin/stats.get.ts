@@ -3,13 +3,17 @@ import { createClient } from '@supabase/supabase-js'
 export default defineEventHandler(async () => {
   const config = useRuntimeConfig()
 
-  // ✅ Guard — must have service key
+  // ✅ Use config for ALL env vars — not process.env
   if (!config.supabaseServiceKey) {
     throw createError({ statusCode: 500, message: 'Missing SUPABASE_SERVICE_KEY' })
   }
 
+  if (!config.public.supabaseUrl) {
+    throw createError({ statusCode: 500, message: 'Missing SUPABASE_URL' })
+  }
+
   const supabase = createClient(
-    process.env.SUPABASE_URL!,
+    config.public.supabaseUrl,        // ✅ from config, not process.env
     config.supabaseServiceKey,
   )
 
