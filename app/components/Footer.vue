@@ -72,9 +72,9 @@
         <h4 class="text-gray-900 font-semibold text-sm">Company</h4>
         <ul class="flex flex-col gap-3">
           <li><NuxtLink to="/about" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">About Us</NuxtLink></li>
-          <li><NuxtLink to="/mentors" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Our Mentors</NuxtLink></li>
+          <!-- <li><NuxtLink to="/mentors" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Our Mentors</NuxtLink></li>
           <li><NuxtLink to="/careers" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Careers</NuxtLink></li>
-          <li><NuxtLink to="/blog" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Blog</NuxtLink></li>
+          <li><NuxtLink to="/blog" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Blog</NuxtLink></li> -->
         </ul>
       </div>
 

@@ -164,29 +164,62 @@
       <div class="grid md:grid-cols-2 gap-12 items-start">
 
         <!-- Left: Text -->
-        <div>
-          <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-            Meet Mrs. Ufedo Laura Obochi
-          </h1>
-          <p class="text-blue-600 text-sm font-medium italic mb-6">"We educate educators to teaching educators."</p>
+     <!-- Left: Text -->
+<div>
+  <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+    Meet Mrs. Ufedo Laura Obochi
+  </h1>
+  <p class="text-blue-600 text-sm font-medium italic mb-6">"We educate educators to teaching educators."</p>
 
-          <div class="space-y-4 text-gray-500 text-sm leading-relaxed">
-            <p>
-              Mrs. Ufedo Laura Obochi is a pioneering force in digital education. With over 15 years of experience,
-              she has dedicated her career to transforming the way teachers engage with digital tools. She believes
-              that the best way to serve students is by empowering those who teach them.
-            </p>
-            <p>
-              With a background in EdTech and Instructional Design, she founded DigitalEd Hub to give every
-              educator — regardless of location or budget — access to world-class training and a thriving global
-              community.
-            </p>
-          </div>
+  <div class="space-y-4 text-gray-500 text-sm leading-relaxed">
+    <p>
+      Mrs. Ufedo Laura Obochi is a pioneering force in digital education. With over 15 years of experience,
+      she has dedicated her career to transforming the way teachers engage with digital tools. She believes
+      that the best way to serve students is by empowering those who teach them.
+    </p>
+    <p>
+      With a background in EdTech and Instructional Design, she founded DigitalEd Hub to give every
+      educator — regardless of location or budget — access to world-class training and a thriving global
+      community.
+    </p>
 
-          <button class="mt-8 text-blue-600 text-sm font-semibold border border-blue-600 rounded-lg px-5 py-2.5 hover:bg-blue-50 transition-colors">
-            ↓ Read full bio
-          </button>
-        </div>
+    <!-- ✅ Full bio — shown when expanded -->
+    <Transition name="bio">
+      <div v-if="showFullBio" class="space-y-4">
+        <p>
+          Before founding DigitalEd Hub, Mrs. Obochi served as a curriculum developer and instructional
+          designer across several educational institutions in Nigeria, where she witnessed firsthand the
+          growing gap between traditional teaching methods and the demands of a digital world.
+        </p>
+        <p>
+          Her work took her across West Africa, training hundreds of teachers in digital literacy,
+          classroom technology integration, and online course creation. She quickly became known not
+          just as a trainer, but as a movement builder — someone who could turn a room full of
+          skeptical teachers into confident digital educators in a matter of days.
+        </p>
+        <p>
+          In 2022, she channeled that experience into building DigitalEd Hub — a platform designed from
+          the ground up by an educator, for educators. Every feature, every course, every community
+          thread on this platform carries the fingerprints of her mission: that no teacher should be
+          left behind in the digital age.
+        </p>
+        <p>
+          Outside of her work, Mrs. Obochi is a wife, mother, and passionate advocate for women in
+          EdTech. She speaks regularly at education conferences and mentors young women pursuing careers
+          in instructional design and digital learning.
+        </p>
+      </div>
+    </Transition>
+  </div>
+
+  <!-- ✅ Toggle button -->
+  <button
+    @click="showFullBio = !showFullBio"
+    class="mt-8 text-blue-600 text-sm font-semibold border border-blue-600 rounded-lg px-5 py-2.5 hover:bg-blue-50 transition-colors flex items-center gap-2"
+  >
+    <span>{{ showFullBio ? '↑ Show less' : '↓ Read full bio' }}</span>
+  </button>
+</div>
 
         <!-- Right: Photo -->
         <div class="flex justify-center md:justify-end">
@@ -328,6 +361,7 @@ import mommaIMG from '~/assets/IMGS/mommaIMG.jpg'
 
 definePageMeta({ layout: false })
 
+const showFullBio = ref(false)
 const supabase    = useSupabaseClient()
 const user        = useSupabaseUser()
 const sidebarOpen = ref(false)
@@ -359,4 +393,16 @@ async function handleLogout() {
 .slide-leave-active { transition: transform 0.3s ease; }
 .slide-enter-from,
 .slide-leave-to { transform: translateX(100%); }
+
+.bio-enter-active,
+.bio-leave-active {
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+  max-height: 600px;
+  overflow: hidden;
+}
+.bio-enter-from,
+.bio-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
 </style>

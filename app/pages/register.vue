@@ -199,12 +199,12 @@
               </button>
 
               <!-- Facebook (placeholder) -->
-              <button class="flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-3 text-sm bg-white hover:bg-gray-50 transition-colors">
+              <!-- <button class="flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-3 text-sm bg-white hover:bg-gray-50 transition-colors">
                 <svg class="w-4 h-4 text-blue-700" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                 </svg>
                 Facebook
-              </button>
+              </button> -->
 
             </div>
 
