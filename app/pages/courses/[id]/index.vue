@@ -15,50 +15,129 @@
           </div>
           <span class="font-bold text-gray-900 text-sm">DigitalEd Hub</span>
         </NuxtLink>
-        <NuxtLink to="/courses" class="text-sm text-gray-500 hover:text-blue-600">← Back to Courses</NuxtLink>
+        <NuxtLink to="/courses" class="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+          ← Back to Courses
+        </NuxtLink>
       </div>
     </header>
 
+    <!-- Loading -->
+    <div v-if="isLoading" class="flex-1 flex items-center justify-center">
+      <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Not found -->
+    <div v-else-if="!course" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+      <p class="text-gray-400 text-sm font-medium">Course not found.</p>
+      <NuxtLink to="/courses" class="mt-4 text-blue-600 text-sm font-semibold hover:underline">
+        Browse all courses →
+      </NuxtLink>
+    </div>
+
     <!-- Course Detail -->
-    <main class="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10">
+    <main v-else class="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10">
 
       <div class="grid md:grid-cols-[1fr_340px] gap-8 items-start">
 
         <!-- LEFT: Course Info -->
         <div>
-          <img :src="course.image" class="w-full rounded-2xl object-cover aspect-video mb-6"/>
+          <!-- Thumbnail -->
+          <div class="w-full rounded-2xl overflow-hidden aspect-video mb-6 bg-blue-50 flex items-center justify-center">
+            <img
+              v-if="course.thumbnail"
+              :src="course.thumbnail"
+              :alt="course.title"
+              class="w-full h-full object-cover"
+            />
+            <svg v-else class="w-16 h-16 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+
+          <!-- Category badge -->
+          <span class="text-[10px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide bg-blue-100 text-blue-700 mb-4 inline-block">
+            {{ course.category }}
+          </span>
 
           <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ course.title }}</h1>
-          <p class="text-gray-500 text-sm mb-4">by {{ course.author }} &nbsp;·&nbsp; ⭐ {{ course.rating }}</p>
+          <p class="text-gray-500 text-sm mb-4">by DigitalEd Hub &nbsp;·&nbsp; Lifetime access</p>
           <p class="text-gray-600 leading-relaxed mb-6">{{ course.description }}</p>
 
           <!-- What you'll learn -->
           <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-6">
             <h2 class="font-bold text-gray-900 mb-3 text-sm">What you'll learn</h2>
             <ul class="space-y-2">
-              <li v-for="point in course.learningPoints" :key="point" class="flex items-start gap-2 text-sm text-gray-700">
+              <li class="flex items-start gap-2 text-sm text-gray-700">
                 <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
-                {{ point }}
+                Gain practical skills you can apply immediately in your teaching
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Learn at your own pace with lifetime access to all materials
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Join a community of educators growing together
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Earn a certificate of completion upon finishing the course
               </li>
             </ul>
           </div>
 
-          <!-- Lessons -->
-          <div>
-            <h2 class="font-bold text-gray-900 mb-3 text-sm">Course Content</h2>
-            <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <div
-                v-for="(lesson, idx) in course.lessons"
-                :key="idx"
-                class="flex items-center gap-3 px-4 py-3 border-b border-gray-100 last:border-none bg-white"
-              >
-                <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs text-gray-500 font-bold flex-shrink-0">
-                  {{ idx + 1 }}
-                </div>
-                <span class="text-sm text-gray-700 flex-1">{{ lesson.title }}</span>
-                <span class="text-xs text-gray-400">{{ lesson.duration }}</span>
+          <!-- Course video preview (if available) -->
+          <div v-if="course.video_url" class="mb-6">
+            <h2 class="font-bold text-gray-900 mb-3 text-sm">Course Preview</h2>
+            <div class="rounded-xl overflow-hidden border border-gray-200 bg-black aspect-video">
+              <video
+                :src="course.video_url"
+                controls
+                class="w-full h-full"
+                preload="metadata"
+              />
+            </div>
+          </div>
+
+          <!-- Course details -->
+          <div class="border border-gray-200 rounded-xl overflow-hidden">
+            <div class="px-5 py-4 bg-gray-50 border-b border-gray-100">
+              <h2 class="font-bold text-gray-900 text-sm">Course Details</h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <div class="flex items-center gap-3 px-5 py-3.5">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                <span class="text-sm text-gray-600">Category: <strong class="text-gray-900">{{ course.category }}</strong></span>
+              </div>
+              <div class="flex items-center gap-3 px-5 py-3.5">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span class="text-sm text-gray-600">Self-paced · Lifetime access</span>
+              </div>
+              <div class="flex items-center gap-3 px-5 py-3.5">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span class="text-sm text-gray-600">Certificate of completion included</span>
+              </div>
+              <div class="flex items-center gap-3 px-5 py-3.5">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span class="text-sm text-gray-600">Secure payment via Paystack</span>
               </div>
             </div>
           </div>
@@ -68,43 +147,59 @@
         <div class="sticky top-20">
           <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
 
-            <img :src="course.image" class="w-full object-cover h-40"/>
+            <!-- Thumbnail preview -->
+            <div class="w-full h-40 bg-blue-50 overflow-hidden">
+              <img
+                v-if="course.thumbnail"
+                :src="course.thumbnail"
+                :alt="course.title"
+                class="w-full h-full object-cover"
+              />
+              <div v-else class="w-full h-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              </div>
+            </div>
 
             <div class="p-5">
               <div class="flex items-baseline gap-2 mb-1">
-                <span class="text-2xl font-extrabold text-gray-900">{{ course.price }}</span>
+                <span class="text-2xl font-extrabold text-gray-900">₦{{ course.price.toLocaleString() }}</span>
               </div>
               <p class="text-xs text-gray-400 mb-5">One-time payment · Lifetime access</p>
 
-              <!-- Enroll button -->
-              <button
-                @click="handleEnroll"
-                :disabled="isLoading"
-                class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
-              >
-                <svg v-if="isLoading" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-                </svg>
-                {{ isLoading ? 'Processing...' : 'Enroll Now →' }}
-              </button>
-
               <!-- Already enrolled -->
-              <div v-if="isEnrolled" class="mt-3 text-center">
-                <p class="text-green-600 text-xs font-semibold mb-2">✓ You are enrolled in this course</p>
+              <div v-if="isEnrolled" class="mb-4">
+                <p class="text-green-600 text-xs font-semibold mb-2 text-center">✓ You are enrolled in this course</p>
                 <NuxtLink
                   :to="`/courses/${course.id}/learn`"
-                  class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl transition-colors text-sm"
+                  class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-colors text-sm"
                 >
                   Continue Learning →
                 </NuxtLink>
               </div>
+
+              <!-- Enroll button -->
+              <button
+                v-else
+                @click="handleEnroll"
+                :disabled="enrolling"
+                class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+              >
+                <svg v-if="enrolling" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                {{ enrolling ? 'Processing...' : 'Enroll Now →' }}
+              </button>
+
+              <p v-if="paymentError" class="text-red-500 text-xs mt-3 text-center">{{ paymentError }}</p>
 
               <ul class="mt-5 space-y-2 text-xs text-gray-500">
                 <li class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                   </svg>
-                  {{ course.lessons.length }} lessons · Self-paced
+                  Self-paced · Learn anytime
                 </li>
                 <li class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -127,327 +222,158 @@
       </div>
     </main>
 
-    <!-- PAYSTACK MODAL -->
-    <div
-      v-if="showPaymentModal"
-      class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4"
-      @click.self="showPaymentModal = false"
-    >
-      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-
-        <div class="flex items-center justify-between mb-5">
-          <h2 class="font-bold text-gray-900">Complete Payment</h2>
-          <button @click="showPaymentModal = false" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="flex gap-3 mb-5 p-3 bg-gray-50 rounded-xl">
-          <img :src="course.image" class="w-14 h-14 rounded-lg object-cover flex-shrink-0"/>
-          <div>
-            <p class="text-sm font-semibold text-gray-900">{{ course.title }}</p>
-            <p class="text-xs text-gray-500">{{ course.author }}</p>
-            <p class="text-blue-600 font-bold text-sm mt-1">{{ course.price }}</p>
-          </div>
-        </div>
-
-        <div class="mb-5">
-          <p class="text-xs text-gray-500 mb-1">Paying as</p>
-          <p class="text-sm font-semibold text-gray-800 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-200">
-            {{ userEmail }}
-          </p>
-        </div>
-
-        <p v-if="paymentError" class="text-red-500 text-xs mb-4 text-center">{{ paymentError }}</p>
-
-        <button
-          @click="initializePaystack"
-          :disabled="isPaying"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
-        >
-          <svg v-if="isPaying" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-          </svg>
-          {{ isPaying ? 'Opening Paystack...' : `Pay ${course.price} →` }}
-        </button>
-
-        <p class="text-center text-xs text-gray-400 mt-3">🔒 Secured by Paystack</p>
-      </div>
-    </div>
+    <footer class="text-center py-6 text-xs text-gray-400">
+      © 2026 DigitalEd Hub. All rights reserved.
+    </footer>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
-definePageMeta({
-  layout: false,
-  middleware: 'auth',
-})
+definePageMeta({ layout: false })
 
-// ── Types ──────────────────────────────
-interface Lesson { title: string; duration: string }
-
-interface CourseDetail {
-  id: number
-  title: string
-  price: string
-  amountKobo: number
-  author: string
-  rating: string
-  image: string
+interface Course {
+  id:          string
+  title:       string
   description: string
-  learningPoints: string[]
-  lessons: Lesson[]
+  price:       number
+  category:    string
+  thumbnail:   string | null
+  video_url:   string | null
+  status:      string
 }
 
-// ── Route ──────────────────────────────
-const route    = useRoute()
-const courseId = Number(route.params.id)
+const route   = useRoute()
+const courseId = String(route.params.id)
 
-// ── Auth ───────────────────────────────
-const supabase  = useSupabaseClient()
-const user      = useSupabaseUser()
-const userEmail = computed(() => user.value?.email ?? '')
+const supabase     = useSupabaseClient()
+const user         = useSupabaseUser()
+const config       = useRuntimeConfig()
 
-// ── Config ─────────────────────────────
-const config = useRuntimeConfig()
+const isLoading    = ref(true)
+const course       = ref<Course | null>(null)
+const isEnrolled   = ref(false)
+const enrolling    = ref(false)
+const paymentError = ref('')
 
-// ── State ──────────────────────────────
-const isLoading        = ref(false)
-const isPaying         = ref(false)
-const showPaymentModal = ref(false)
-const paymentError     = ref('')
-const isEnrolled       = ref(false)
-
-// ── Courses ────────────────────────────
-const allCourses: CourseDetail[] = [
-  {
-    id: 1,
-    title: 'Advanced Digital Pedagogy',
-    price: '₦1,000',
-    amountKobo: 100000,
-    author: 'Ufedo .L. Obochi',
-    rating: '4.9',
-    image: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?w=800&q=80',
-    description: 'Learn how to integrate AI and cutting-edge digital tools into your lessons. This course walks you through modern pedagogy frameworks designed for the digital age.',
-    learningPoints: [
-      'Integrate AI tools into daily lesson plans',
-      'Design interactive digital learning experiences',
-      'Assess student progress using digital methods',
-      'Build a sustainable digital teaching workflow',
-    ],
-    lessons: [
-      { title: 'Introduction to Digital Pedagogy', duration: '12:30' },
-      { title: 'AI Tools for Educators',           duration: '18:00' },
-      { title: 'Designing Interactive Lessons',    duration: '22:15' },
-      { title: 'Digital Assessment Strategies',    duration: '15:45' },
-      { title: 'Building Your Digital Workflow',   duration: '20:00' },
-    ],
-  },
-  {
-    id: 2,
-    title: 'Curriculum Design Mastery',
-    price: '₦6,000',
-    amountKobo: 600000,
-    author: 'Ufedo .L. Obochi',
-    rating: '4.8',
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80',
-    description: 'Build future-proof curricula that meet global standards and keep students engaged throughout the learning journey.',
-    learningPoints: [
-      'Apply global curriculum frameworks',
-      'Map learning outcomes to activities',
-      'Design assessments aligned to objectives',
-      'Review and iterate your curriculum',
-    ],
-    lessons: [
-      { title: 'Curriculum Foundations',      duration: '14:00' },
-      { title: 'Mapping Learning Outcomes',   duration: '16:30' },
-      { title: 'Designing Assessments',       duration: '19:00' },
-      { title: 'Global Standards Overview',   duration: '12:00' },
-      { title: 'Iteration and Review',        duration: '11:45' },
-    ],
-  },
-  {
-    id: 3,
-    title: 'Classroom Leadership',
-    price: '₦3,500',
-    amountKobo: 350000,
-    author: 'Ufedo .L. Obochi',
-    rating: '5.0',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
-    description: 'Develop the leadership skills needed to inspire, motivate and lead students and colleagues in the modern classroom.',
-    learningPoints: [
-      'Lead with confidence and clarity',
-      'Manage classroom dynamics effectively',
-      'Mentor and coach fellow educators',
-      'Build a positive learning culture',
-    ],
-    lessons: [
-      { title: 'The Leader Educator',        duration: '10:00' },
-      { title: 'Classroom Dynamics',         duration: '13:30' },
-      { title: 'Mentoring Colleagues',       duration: '15:00' },
-      { title: 'Building Learning Culture',  duration: '17:00' },
-      { title: 'Sustaining Leadership',      duration: '09:45' },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Student Engagement',
-    price: '₦5,000',
-    amountKobo: 500000,
-    author: 'Ufedo .L. Obochi',
-    rating: '4.7',
-    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
-    description: 'Master proven techniques to keep students motivated, attentive and actively participating in every lesson.',
-    learningPoints: [
-      'Apply engagement frameworks to lessons',
-      'Use gamification in the classroom',
-      'Handle disengaged students effectively',
-      'Create a student-centred environment',
-    ],
-    lessons: [
-      { title: 'What is Student Engagement?', duration: '08:30' },
-      { title: 'Gamification Basics',         duration: '14:00' },
-      { title: 'Handling Disengagement',      duration: '11:15' },
-      { title: 'Student-Centred Design',      duration: '16:00' },
-      { title: 'Measuring Engagement',        duration: '12:30' },
-    ],
-  },
-  {
-    id: 5,
-    title: 'Course Monetisation',
-    price: '₦7,000',
-    amountKobo: 700000,
-    author: 'Ufedo .L. Obochi',
-    rating: '4.9',
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
-    description: 'Turn your knowledge and expertise into a profitable online course. Learn pricing, marketing and selling strategies for educators.',
-    learningPoints: [
-      'Package your knowledge as a course',
-      'Price your course for the Nigerian market',
-      'Market your course on social media',
-      'Use Paystack to collect payments',
-    ],
-    lessons: [
-      { title: 'Your Knowledge as a Product', duration: '13:00' },
-      { title: 'Pricing Strategies',          duration: '15:30' },
-      { title: 'Social Media Marketing',      duration: '20:00' },
-      { title: 'Payment Integration',         duration: '18:00' },
-      { title: 'Scaling Your Course',         duration: '14:45' },
-    ],
-  },
-]
-
-const course = computed((): CourseDetail =>
-  allCourses.find(c => c.id === courseId) ?? allCourses[0]!
-)
-
-// ── Check enrollment on mount ───────────
 onMounted(async () => {
-  // Use getSession() — more reliable than useSupabaseUser() on first load
+  // ✅ Fetch course from Supabase
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, title, description, price, category, thumbnail, video_url, status')
+    .eq('id', courseId)
+    .single()
+
+  if (error || !data) {
+    console.error('Course fetch error:', error?.message)
+    isLoading.value = false
+    return
+  }
+
+  course.value    = data
+  isLoading.value = false
+
+  // ✅ Check if user is enrolled
   const { data: { session } } = await supabase.auth.getSession()
   const currentUser = session?.user ?? user.value
   if (!currentUser) return
 
-  const { data } = await supabase
+  const { data: enrollment } = await supabase
     .from('enrollments')
     .select('id')
     .eq('user_id', currentUser.id)
     .eq('course_id', courseId)
     .maybeSingle()
 
-  isEnrolled.value = !!data
+  isEnrolled.value = !!enrollment
 })
 
-// ── Enroll handler ─────────────────────
 function handleEnroll() {
-  if (isEnrolled.value) {
-    navigateTo(`/courses/${courseId}/learn`)
+  if (!user.value) {
+    navigateTo('/login')
     return
   }
-  paymentError.value    = ''
-  showPaymentModal.value = true
-}
 
-// ── Paystack ───────────────────────────
-// ── Paystack ───────────────────────────
-async function initializePaystack() {
-  isPaying.value     = true
-  paymentError.value = ''
+  if (!course.value) return
 
   const PaystackPop = (window as any).PaystackPop
 
   if (!PaystackPop) {
-    paymentError.value = 'Payment is loading, please try again.'
-    isPaying.value = false
+    paymentError.value = 'Payment is loading, please try again in a moment.'
     return
   }
 
-  // ✅ Use getSession() instead of user.value — reliable even before hydration
-  const { data: { session } } = await supabase.auth.getSession()
-  const currentUser = session?.user ?? user.value
+  enrolling.value    = true
+  paymentError.value = ''
 
-  if (!currentUser) {
-    paymentError.value = 'You must be logged in to enroll.'
-    isPaying.value = false
-    return
-  }
-
-  const userId      = currentUser.id
-  const payingEmail = currentUser.email ?? ''
+  // ✅ Capture synchronously before iframe opens
+  const userId      = user.value.id
+  const payingEmail = user.value.email!
+  const courseId_   = courseId
+  const price       = course.value.price
 
   const handler = PaystackPop.setup({
     key:      config.public.paystackPublicKey,
     email:    payingEmail,
-    amount:   course.value.amountKobo,
+    amount:   price * 100,
     currency: 'NGN',
-    ref:      `DEH-${courseId}-${Date.now()}`,
+    ref:      `DEH-${courseId_}-${Date.now()}`,
     metadata: {
-      course_id:    courseId,
+      course_id:    courseId_,
       course_title: course.value.title,
     },
     onClose() {
-      isPaying.value = false
+      enrolling.value = false
     },
-    callback(response: { reference: string }) {
-      isPaying.value = false
-      onPaymentSuccess(response.reference, userId)
+    callback(response: { reference: string }) {          // ← NOT async
+      enrolling.value = false
+      const ref = response.reference
+      Promise.resolve().then(() => onPaymentSuccess(ref, userId))
     },
   })
 
   handler.openIframe()
 }
 
-// ── After payment success ──────────────
-// userId passed as parameter — never read user.value here
-// because this runs outside Vue's reactivity scope
 async function onPaymentSuccess(reference: string, userId: string) {
-  isLoading.value        = true
-  showPaymentModal.value = false
+  if (!course.value) return
+  enrolling.value = true
 
   try {
-    const { data, error } = await supabase.from('enrollments').insert({
-      user_id:      userId,
+    // ✅ Force fresh session — don't rely on cached user
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      paymentError.value = 'Session expired. Please log in and contact support.'
+      enrolling.value = false
+      return
+    }
+
+    const { error } = await supabase.from('enrollments').insert({
+      user_id:      session.user.id,   // ✅ use session directly, not the passed userId
       course_id:    courseId,
       course_title: course.value.title,
-      amount:       course.value.amountKobo / 100,  // store in Naira
+      amount:       course.value.price,
       reference,
-    }).select()
+    })
 
-    if (error) throw error
+    if (error) {
+      console.error('Enrollment error:', JSON.stringify(error, null, 2))
+      paymentError.value = 'Payment received but enrollment failed. Please contact support.'
+      enrolling.value = false
+      return
+    }
 
-    // Small delay so Supabase write is committed before dashboard reads
-    await new Promise(resolve => setTimeout(resolve, 500))
+    isEnrolled.value = true
     await navigateTo('/dashboard')
 
-  } catch (err) {
-    console.error('Enrollment error:', err)
+  } catch (err: any) {
+    console.error('Enrollment exception:', err)
     paymentError.value = 'Payment received but enrollment failed. Please contact support.'
-    isLoading.value = false
   }
+
+  enrolling.value = false
 }
 </script>

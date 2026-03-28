@@ -344,21 +344,40 @@ async function saveCourse() {
   isSaving.value = true
 
   try {
-    // ✅ Upload thumbnail to Cloudinary if provided
+    // ✅ Upload thumbnail
     let thumbnailUrl = ''
     if (thumbnailFile.value) {
-      const formData = new FormData()
-      formData.append('file', thumbnailFile.value)
-      formData.append('upload_preset', 'digitaled_hub') // update with your preset
-      const res  = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
+      const fd = new FormData()
+      fd.append('file', thumbnailFile.value)
+      fd.append('upload_preset', 'digitaled_hub')
+
+      const res  = await fetch('https://api.cloudinary.com/v1_1/duisso2y3/image/upload', {
         method: 'POST',
-        body:   formData,
+        body:   fd,
       })
       const data = await res.json()
+      if (data.error) throw new Error('Thumbnail upload failed: ' + data.error.message)
       thumbnailUrl = data.secure_url ?? ''
     }
 
-    // ✅ Insert course into Supabase
+    // ✅ Upload video — use 'auto' not 'video' so it handles all file types
+    let videoUrl = ''
+    if (materialFile.value) {
+      const fd = new FormData()
+      fd.append('file', materialFile.value)
+      fd.append('upload_preset', 'digitaled_hub')
+
+      const res  = await fetch('https://api.cloudinary.com/v1_1/duisso2y3/auto/upload', { // ✅ auto instead of video
+        method: 'POST',
+        body:   fd,
+      })
+      const data = await res.json()
+      console.log('Cloudinary video response:', data) // ✅ debug log
+      if (data.error) throw new Error('Video upload failed: ' + data.error.message)
+      videoUrl = data.secure_url ?? ''
+    }
+
+    // ✅ Save to Supabase
     const { error } = await supabase.from('courses').insert({
       title:       form.value.title,
       category:    form.value.category,
@@ -366,6 +385,7 @@ async function saveCourse() {
       description: form.value.description,
       status:      form.value.status,
       thumbnail:   thumbnailUrl,
+      video_url:   videoUrl,
     })
 
     if (error) throw error
@@ -378,6 +398,7 @@ async function saveCourse() {
 
   } catch (e: any) {
     errorMsg.value = e.message ?? 'Failed to save course. Please try again.'
+    console.error('saveCourse error:', e)
   }
 
   isSaving.value = false

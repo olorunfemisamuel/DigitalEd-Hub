@@ -1,14 +1,11 @@
 <template>
-  <!-- FEATURED COURSES -->
   <section class="bg-white py-16">
 
     <div class="max-w-7xl mx-auto px-6 md:px-12 mb-10">
       <div class="flex justify-between items-start">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">Featured Development Courses</h2>
-          <p class="text-gray-500 text-sm mt-1">
-            Master the latest in pedagogy and classroom technology.
-          </p>
+          <h2 class="text-2xl font-bold text-gray-900">Featured Courses</h2>
+          <p class="text-gray-500 text-sm mt-1">Everything you need to teach online and earn.</p>
         </div>
         <NuxtLink to="/courses" class="text-blue-600 text-sm font-medium hover:underline">
           Browse all ↗
@@ -16,8 +13,18 @@
       </div>
     </div>
 
-    <!-- DRAGGABLE / SWIPEABLE ROW -->
-    <div class="px-6 md:px-12">
+    <!-- Loading -->
+    <div v-if="isLoading" class="flex justify-center py-10">
+      <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
+    </div>
+
+    <!-- Empty -->
+    <div v-else-if="courses.length === 0" class="text-center py-10 text-gray-400 text-sm">
+      No courses available yet.
+    </div>
+
+    <!-- Carousel -->
+    <div v-else class="px-6 md:px-12">
       <div
         ref="trackRef"
         class="flex gap-6 overflow-x-auto scroll-smooth pb-4 cursor-grab active:cursor-grabbing select-none"
@@ -33,11 +40,20 @@
           class="carousel-card group flex-shrink-0 cursor-pointer"
           @click="handleCourseClick(course)"
         >
-          <div class="relative overflow-hidden rounded-t-2xl">
+          <!-- Thumbnail -->
+          <div class="relative overflow-hidden rounded-t-2xl h-44 bg-blue-50">
             <img
-              :src="course.image"
-              class="aspect-video object-cover w-full group-hover:scale-105 transition-transform duration-300"
+              v-if="course.thumbnail"
+              :src="course.thumbnail"
+              :alt="course.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
+            <div v-else class="w-full h-full flex items-center justify-center">
+              <svg class="w-10 h-10 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
             <!-- Hover overlay -->
             <div class="absolute inset-0 bg-blue-600/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <span class="bg-white text-blue-600 text-xs font-bold px-4 py-2 rounded-full shadow">
@@ -45,16 +61,21 @@
               </span>
             </div>
           </div>
+
+          <!-- Info -->
           <div class="p-5">
-            <div class="flex justify-between mb-2">
-              <h3 class="font-bold text-sm group-hover:text-blue-600 transition-colors">{{ course.title }}</h3>
-              <span class="text-blue-600 font-bold text-sm">{{ course.price }}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wide bg-blue-100 text-blue-700 mb-2 inline-block">
+              {{ course.category }}
+            </span>
+            <div class="flex justify-between items-start mb-2 gap-2">
+              <h3 class="font-bold text-sm text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">
+                {{ course.title }}
+              </h3>
+              <span class="text-blue-600 font-bold text-sm flex-shrink-0">
+                ₦{{ course.price.toLocaleString() }}
+              </span>
             </div>
-            <p class="text-gray-400 text-xs mb-4">{{ course.desc }}</p>
-            <div class="flex justify-between text-xs text-gray-500">
-              <span>{{ course.author }}</span>
-              <span>⭐ {{ course.rating }}</span>
-            </div>
+            <p class="text-gray-400 text-xs line-clamp-2 leading-relaxed">{{ course.description }}</p>
           </div>
         </div>
       </div>
@@ -62,25 +83,36 @@
 
   </section>
 </template>
-
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-// ── Types ──────────────────────────────
 interface Course {
-  id: number
-  title: string
-  price: string
-  author: string
-  rating: string
-  image: string
-  desc: string
+  id:          string
+  title:       string
+  description: string
+  price:       number
+  category:    string
+  thumbnail:   string | null
 }
 
-// ── Auth ───────────────────────────────
-const user = useSupabaseUser()
+const user    = useSupabaseUser()
+const supabase = useSupabaseClient()
 
-// ── Navigation ─────────────────────────
+const courses  = ref<Course[]>([])
+const isLoading = ref(true)
+
+onMounted(async () => {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, title, description, price, category, thumbnail')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(5)  // only show up to 5 in the carousel
+
+  if (!error) courses.value = data ?? []
+  isLoading.value = false
+})
+
 function handleCourseClick(course: Course) {
   if (user.value) {
     navigateTo(`/courses/${course.id}`)
@@ -92,57 +124,7 @@ function handleCourseClick(course: Course) {
   }
 }
 
-// ── Courses Data ───────────────────────
-const courses: Course[] = [
-  {
-    id: 1,
-    title: 'Advanced Digital Pedagogy',
-    price: '₦1,000',
-    author: 'Ufedo .L. Obochi',
-    rating: '4.9',
-    image: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?w=600&q=80',
-    desc: 'Learn how to integrate AI and digital tools into lessons.'
-  },
-  {
-    id: 2,
-    title: 'Curriculum Design Mastery',
-    price: '₦6,000',
-    author: 'Ufedo .L. Obochi',
-    rating: '4.8',
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80',
-    desc: 'Build future-proof curricula that meet global standards.'
-  },
-  {
-    id: 3,
-    title: 'Classroom Leadership',
-    price: '₦3,500',
-    author: 'Ufedo .L. Obochi',
-    rating: '5.0',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
-    desc: 'Develop leadership skills for inspiring classrooms.'
-  },
-  {
-    id: 4,
-    title: 'Student Engagement',
-    price: '₦5,000',
-    author: 'Ufedo .L. Obochi',
-    rating: '4.7',
-    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80',
-    desc: 'Keep students motivated and actively participating.'
-  },
-  {
-    id: 5,
-    title: 'Course Monetisation',
-    price: '₦7,000',
-    author: 'Ufedo .L. Obochi',
-    rating: '4.9',
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80',
-    desc: 'Turn your knowledge into a profitable course.'
-  }
-]
-
-// ── Drag to scroll (desktop) ───────────
-// Touch/swipe works natively via overflow-x: auto on mobile
+// ── Drag to scroll (unchanged) ─────────
 const trackRef = ref<HTMLElement | null>(null)
 let isDragging = false
 let startX = 0
@@ -159,13 +141,10 @@ function onDrag(e: MouseEvent) {
   if (!isDragging || !trackRef.value) return
   e.preventDefault()
   const x = e.pageX - trackRef.value.offsetLeft
-  const walk = (x - startX) * 1.2  // drag speed multiplier
-  trackRef.value.scrollLeft = scrollLeft - walk
+  trackRef.value.scrollLeft = scrollLeft - (x - startX) * 1.2
 }
 
-function endDrag() {
-  isDragging = false
-}
+function endDrag() { isDragging = false }
 </script>
 
 <style scoped>

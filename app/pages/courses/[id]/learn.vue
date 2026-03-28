@@ -1,339 +1,285 @@
 <template>
 <div class="min-h-screen bg-gray-50 flex flex-col">
 
-<!-- =========================
-NAVBAR
-========================= -->
-
-<header class="bg-white border-b border-gray-200">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-
-  <!-- LEFT -->
-  <div class="flex items-center gap-6">
-    <NuxtLink to="/" class="flex items-center gap-2">
-      <div class="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-        <div class="grid grid-cols-2 gap-[2px]">
-          <div class="w-2 h-2 bg-white rounded-sm"></div>
-          <div class="w-2 h-2 bg-white/80 rounded-sm"></div>
-          <div class="w-2 h-2 bg-white/80 rounded-sm"></div>
-          <div class="w-2 h-2 bg-white/60 rounded-sm"></div>
-        </div>
-      </div>
-      <span class="font-semibold text-gray-900 text-sm">DigitalEdHub</span>
-    </NuxtLink>
-
-    <nav class="hidden md:flex items-center gap-5 text-sm">
-      <NuxtLink to="/dashboard" class="text-gray-600 hover:text-gray-900">My Courses</NuxtLink>
-      <NuxtLink to="/community" class="text-gray-600 hover:text-gray-900">Explore</NuxtLink>
-    </nav>
-  </div>
-
-  <!-- RIGHT -->
-  <div class="flex items-center gap-3">
-    <div class="hidden sm:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1.5 w-44 md:w-56">
-      <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input placeholder="Search lessons..." class="bg-transparent outline-none text-sm w-full text-gray-500"/>
-    </div>
-    <img src="https://i.pravatar.cc/40?img=5" class="w-8 h-8 rounded-full"/>
-  </div>
-
-</div>
-</header>
-
-<!-- =========================
-MAIN LAYOUT
-========================= -->
-<div class="flex flex-1 flex-col lg:flex-row">
-
-  <!-- VIDEO + LESSON CONTENT -->
-  <main class="flex-1 p-4 sm:p-6">
-
-    <!-- VIDEO PLAYER -->
-    <div class="bg-black rounded-lg overflow-hidden aspect-video relative">
-
-      <video
-        ref="videoEl"
-        class="w-full h-full object-contain"
-        @timeupdate="onTimeUpdate"
-        @loadedmetadata="onMetaLoaded"
-        @ended="isPlaying = false"
-      >
-        <!-- ✅ Cloudinary video URL — bound dynamically to currentLesson -->
-        <source :src="currentLesson.videoUrl" type="video/mp4"/>
-      </video>
-
-      <!-- PLAY BUTTON -->
-      <button
-        v-if="!isPlaying"
-        @click="togglePlay"
-        class="absolute inset-0 flex items-center justify-center"
-      >
-        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-blue-600 flex items-center justify-center">
-          <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5,3 19,12 5,21"/>
+  <!-- NAVBAR -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <NuxtLink to="/" class="flex items-center gap-2">
+        <div class="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+            <rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+            <rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.7"/>
+            <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
           </svg>
         </div>
-      </button>
+        <span class="font-semibold text-gray-900 text-sm">DigitalEd Hub</span>
+      </NuxtLink>
+      <NuxtLink to="/dashboard" class="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+        ← Back to Dashboard
+      </NuxtLink>
+    </div>
+  </header>
 
-      <!-- VIDEO CONTROLS -->
-      <div class="absolute bottom-0 left-0 right-0 bg-black/70 px-4 py-3">
-        <div class="h-1 bg-white/40 rounded mb-3 cursor-pointer" @click="seekTo">
-          <div class="h-1 bg-blue-500 rounded" :style="{ width: progressPercent + '%' }"></div>
-        </div>
-        <div class="flex items-center justify-between text-white text-xs">
-          <div class="flex items-center gap-3">
-            <button @click="togglePlay">
-              <svg v-if="!isPlaying" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="5,3 19,12 5,21"/>
-              </svg>
-              <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="4" width="4" height="16"/>
-                <rect x="14" y="4" width="4" height="16"/>
-              </svg>
-            </button>
-            <span>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
-          </div>
-          <button @click="toggleFullscreen">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="15 3 21 3 21 9"/>
-              <polyline points="9 21 3 21 3 15"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+  <!-- LOADING -->
+  <div v-if="isLoading" class="flex-1 flex items-center justify-center">
+    <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
+  </div>
 
+  <!-- NOT FOUND -->
+  <div v-else-if="!course" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+    <p class="text-gray-400 text-sm">Course not found.</p>
+    <NuxtLink to="/dashboard" class="mt-4 text-blue-600 text-sm font-semibold hover:underline">
+      Back to Dashboard →
+    </NuxtLink>
+  </div>
+
+  <!-- MAIN -->
+  <main v-else class="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
+
+    <!-- Course title -->
+    <div class="mb-5">
+      <span class="text-[10px] font-semibold px-2.5 py-1 rounded uppercase tracking-wide bg-blue-100 text-blue-700 mb-2 inline-block">
+        {{ course.category }}
+      </span>
+      <h1 class="text-xl font-bold text-gray-900">{{ course.title }}</h1>
+      <p class="text-sm text-gray-500 mt-1">by DigitalEd Hub · Lifetime access</p>
     </div>
 
-    <!-- LESSON HEADER -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6">
-      <div>
-        <h1 class="text-lg font-semibold text-gray-900">{{ currentLesson.title }}</h1>
-        <p class="text-sm text-gray-500">{{ currentLesson.instructor }}</p>
+    <!-- VIDEO PLAYER -->
+    <div class="bg-black rounded-xl overflow-hidden aspect-video relative mb-6">
+
+      <!-- No video uploaded -->
+      <div v-if="!course.video_url" class="w-full h-full flex flex-col items-center justify-center text-gray-500 gap-2">
+        <svg class="w-10 h-10 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+        <p class="text-sm">No video available yet.</p>
       </div>
-      <button
-        @click="markComplete"
-        :class="[
-          'text-sm px-4 py-2 rounded-md font-medium w-full sm:w-auto transition-colors',
-          currentLesson.completed
-            ? 'bg-green-100 text-green-700 border border-green-200'
-            : 'bg-green-600 text-white hover:bg-green-700'
-        ]"
-      >
-        {{ currentLesson.completed ? 'Completed ✓' : 'Mark as Complete' }}
-      </button>
+
+      <!-- Video -->
+      <template v-else>
+        <video
+          ref="videoEl"
+          class="w-full h-full object-contain"
+          @timeupdate="onTimeUpdate"
+          @loadedmetadata="onMetaLoaded"
+          @ended="isPlaying = false"
+        >
+          <source :src="course.video_url" type="video/mp4"/>
+        </video>
+
+        <!-- Play overlay -->
+        <button
+          v-if="!isPlaying"
+          @click="togglePlay"
+          class="absolute inset-0 flex items-center justify-center"
+        >
+          <div class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
+            <svg class="w-6 h-6 text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+          </div>
+        </button>
+
+        <!-- Controls -->
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3">
+          <div
+            class="h-1 bg-white/30 rounded mb-3 cursor-pointer"
+            @click="seekTo"
+          >
+            <div class="h-1 bg-blue-500 rounded" :style="{ width: progressPercent + '%' }"/>
+          </div>
+          <div class="flex items-center justify-between text-white text-xs">
+            <div class="flex items-center gap-3">
+              <button @click="togglePlay">
+                <svg v-if="!isPlaying" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5,3 19,12 5,21"/>
+                </svg>
+                <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="4" width="4" height="16"/>
+                  <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+              </button>
+              <span>{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+            </div>
+            <button @click="toggleFullscreen">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 3 21 3 21 9"/>
+                <polyline points="9 21 3 21 3 15"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </template>
+
     </div>
 
     <!-- TABS -->
-    <div class="flex gap-6 border-b mt-6 text-sm overflow-x-auto">
+
+
+
+    <!-- MARK AS COMPLETE BUTTON -->
+<div class="flex justify-end mb-4">
+  <button
+    @click="toggleComplete"
+    :disabled="savingComplete"
+    :class="isCompleted
+      ? 'bg-green-100 text-green-700 border border-green-200 hover:bg-green-200'
+      : 'bg-green-600 text-white hover:bg-green-700'"
+    class="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+  >
+    <svg v-if="savingComplete" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    <svg v-else-if="isCompleted" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    {{ isCompleted ? 'Completed ✓' : 'Mark as Complete' }}
+  </button>
+</div>
+
+    <div class="flex gap-6 border-b border-gray-200 mb-5 text-sm">
       <button
-        @click="activeTab = 'Overview'"
-        :class="activeTab === 'Overview' ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-500 pb-2'"
-      >Overview</button>
-      <button
-        @click="activeTab = 'Notes'"
-        :class="activeTab === 'Notes' ? 'text-blue-600 border-b-2 border-blue-600 pb-2' : 'text-gray-500 pb-2'"
-      >Notes</button>
+        v-for="tab in ['Overview', 'Notes']"
+        :key="tab"
+        @click="activeTab = tab"
+        :class="activeTab === tab
+          ? 'text-blue-600 border-b-2 border-blue-600 pb-2 font-semibold'
+          : 'text-gray-500 pb-2 hover:text-gray-700'"
+      >
+        {{ tab }}
+      </button>
     </div>
 
-    <!-- TAB CONTENT -->
-    <div class="mt-5 text-sm text-gray-600 leading-relaxed max-w-3xl">
-      <div v-if="activeTab === 'Overview'">
-        <h3 class="font-semibold text-gray-900 mb-2">About this lesson</h3>
-        <p>{{ currentLesson.description }}</p>
-        <ul class="mt-3 space-y-1 list-disc ml-5">
-          <li v-for="point in currentLesson.points" :key="point">{{ point }}</li>
-        </ul>
-      </div>
-      <div v-if="activeTab === 'Notes'">
-        <textarea v-model="notes" placeholder="Write notes..." rows="5" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 resize-none"/>
-        <button class="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-          Save Notes
-        </button>
-      </div>
+    <!-- Overview -->
+    <div v-if="activeTab === 'Overview'" class="max-w-3xl text-sm text-gray-600 leading-relaxed">
+      <h3 class="font-semibold text-gray-900 mb-2">About this course</h3>
+      <p>{{ course.description }}</p>
+    </div>
+
+    <!-- Notes -->
+    <div v-if="activeTab === 'Notes'" class="max-w-3xl">
+      <textarea
+        v-model="notes"
+        placeholder="Write your notes here..."
+        rows="6"
+        class="w-full border border-gray-200 rounded-xl p-4 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+      />
+      <button class="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+        Save Notes
+      </button>
     </div>
 
   </main>
 
-  <!-- SIDEBAR -->
-  <aside class="w-full lg:w-[320px] border-t lg:border-t-0 lg:border-l bg-white flex flex-col">
-
-    <div class="p-5 border-b">
-      <h2 class="font-semibold text-gray-900 text-sm mb-2">Full Stack Educator Masterclass</h2>
-      <div class="flex justify-between text-xs text-gray-500 mb-2">
-        <span>{{ completedCount }} of {{ lessons.length }} lessons completed</span>
-        <span>{{ Math.round((completedCount / lessons.length) * 100) }}%</span>
-      </div>
-      <div class="h-1 bg-gray-200 rounded overflow-hidden">
-        <div
-          class="h-1 bg-blue-600 rounded transition-all duration-500"
-          :style="{ width: (completedCount / lessons.length * 100) + '%' }"
-        ></div>
-      </div>
-    </div>
-
-    <!-- LESSON LIST -->
-    <div class="flex-1 overflow-y-auto max-h-[50vh] lg:max-h-none">
-      <div
-        v-for="lesson in lessons"
-        :key="lesson.id"
-        @click="selectLesson(lesson)"
-        class="flex items-center gap-3 px-5 py-4 border-b cursor-pointer hover:bg-gray-50 transition-colors"
-        :class="currentLesson.id === lesson.id ? 'bg-blue-50' : ''"
-      >
-        <div
-          class="w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs flex-shrink-0 transition-colors"
-          :class="lesson.completed
-            ? 'bg-green-500 border-green-500 text-white'
-            : currentLesson.id === lesson.id
-              ? 'border-blue-600'
-              : 'border-gray-300'"
-        >
-          <svg v-if="lesson.completed" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-sm font-medium" :class="currentLesson.id === lesson.id ? 'text-blue-700' : 'text-gray-800'">
-            {{ lesson.id }}. {{ lesson.title }}
-          </p>
-          <p class="text-xs text-gray-400">{{ lesson.duration }}</p>
-        </div>
-      </div>
-    </div>
-
-  </aside>
-
-</div>
+  <footer class="text-center py-6 text-xs text-gray-400">
+    © 2026 DigitalEd Hub. All rights reserved.
+  </footer>
 
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 definePageMeta({
   layout: false,
   middleware: 'auth',
 })
 
-// ── Types ──────────────────────────────
-interface Lesson {
-  id: number
-  title: string
-  instructor: string
-  duration: string
-  completed: boolean
+interface Course {
+  id:          string
+  title:       string
   description: string
-  points: string[]
-  videoUrl: string       // ← Cloudinary URL lives here
+  category:    string
+  thumbnail:   string | null
+  video_url:   string | null
 }
 
-// ── State ──────────────────────────────
+const route    = useRoute()
+const courseId = String(route.params.id)
+const supabase = useSupabaseClient()
+const user     = useSupabaseUser()
+
+const isLoading     = ref(true)
+const course        = ref<Course | null>(null)
+const activeTab     = ref('Overview')
+const notes         = ref('')
+const isCompleted   = ref(false)
+const savingComplete = ref(false)
+
+// ── Video state ────────────────────────
 const videoEl     = ref<HTMLVideoElement | null>(null)
 const isPlaying   = ref(false)
 const currentTime = ref(0)
 const duration    = ref(0)
-const activeTab   = ref('Overview')
-const notes       = ref('')
 
-// ── Lessons with Cloudinary URLs ───────
-// Right now all lessons share the same intro video URL.
-// When you upload more videos to Cloudinary, just replace
-// each videoUrl with the corresponding Cloudinary link.
-const CLOUD = 'https://res.cloudinary.com/duisso2y3/video/upload'
-
-const lessons = ref<Lesson[]>([
-  {
-    id: 1,
-    title: 'Course Foundations',
-    instructor: 'Dr. Sarah Chen',
-    duration: '12:30',
-    completed: true,
-    description: 'An overview of the full course structure and what you will learn throughout the masterclass.',
-    points: [
-      'Course goals and outcomes',
-      'Tools and equipment you will need',
-      'How to get the most out of this course',
-    ],
-    // ✅ Your real Cloudinary video
-    videoUrl: `${CLOUD}/v1773064951/introductoryDigitalEd_Hub_hd24kv.mp4`,
-  },
-  {
-    id: 2,
-    title: 'Hardware Essentials',
-    instructor: 'Dr. Sarah Chen',
-    duration: '10:15',
-    completed: true,
-    description: 'Deep dive into the hardware required for professional digital education content.',
-    points: [
-      'Camera recommendations by budget',
-      'Microphone types and placement',
-      'Lighting setups for home studios',
-    ],
-    // Replace with your next Cloudinary URL when uploaded
-    videoUrl: `${CLOUD}/v1773069493/digitaledhubstart_esfsqu.mp4`,
-  },
-  {
-    id: 3,
-    title: 'Setting up your Studio',
-    instructor: 'Dr. Sarah Chen',
-    duration: '04:32',
-    completed: false,
-    description: 'This lesson covers the fundamentals of digital teaching, focusing on pedagogy and technology integration in the modern classroom.',
-    points: [
-      'Understanding the digital native landscape',
-      'Mapping pedagogy to modern tools',
-      'Creating a sustainable digital workflow',
-    ],
-    videoUrl: `${CLOUD}/v1773064951/introductoryDigitalEd_Hub_hd24kv.mp4`,
-  },
-  {
-    id: 4,
-    title: 'Engaging your Students',
-    instructor: 'Dr. Sarah Chen',
-    duration: '05:15',
-    completed: false,
-    description: 'Learn proven techniques to keep students engaged and motivated throughout your online courses.',
-    points: [
-      'Interactive lesson design principles',
-      'Using quizzes and checkpoints',
-      'Building community around your course',
-    ],
-    videoUrl: `${CLOUD}/v1773064951/introductoryDigitalEd_Hub_hd24kv.mp4`,
-  },
-  {
-    id: 5,
-    title: 'Content Planning',
-    instructor: 'Dr. Sarah Chen',
-    duration: '22:00',
-    completed: false,
-    description: 'A complete framework for planning and structuring your course content before recording.',
-    points: [
-      'Building a course outline',
-      'Chunking content into digestible lessons',
-      'Balancing theory with practical exercises',
-    ],
-    videoUrl: `${CLOUD}/v1773064951/introductoryDigitalEd_Hub_hd24kv.mp4`,
-  },
-])
-
-// Start on lesson 3
-const currentLesson = ref<Lesson>({ ...lessons.value[2]! })
-
-// ── Computed ───────────────────────────
-const completedCount = computed((): number =>
-  lessons.value.filter(l => l.completed).length
-)
-
-const progressPercent = computed((): number =>
+const progressPercent = computed(() =>
   duration.value ? (currentTime.value / duration.value) * 100 : 0
 )
 
-// ── Video Controls ─────────────────────
-function togglePlay(): void {
+onMounted(async () => {
+  // Fetch course
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, title, description, category, thumbnail, video_url')
+    .eq('id', courseId)
+    .single()
+
+  if (error || !data) {
+    console.error('Course fetch error:', error?.message)
+    isLoading.value = false
+    return
+  }
+
+  course.value    = data
+  isLoading.value = false
+
+  // ✅ Fetch enrollment to check completed status
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+  if (!currentUser) return
+
+  const { data: enrollment } = await supabase
+    .from('enrollments')
+    .select('completed')
+    .eq('user_id', currentUser.id)
+    .eq('course_id', courseId)
+    .maybeSingle()
+
+  if (enrollment) {
+    isCompleted.value = enrollment.completed ?? false
+  }
+})
+
+// ✅ Toggle complete and save to Supabase
+async function toggleComplete() {
+  const { data: { session } } = await supabase.auth.getSession()
+  const currentUser = session?.user ?? user.value
+  if (!currentUser || !course.value) return
+
+  savingComplete.value = true
+  const newValue = !isCompleted.value
+
+  const { error } = await supabase
+    .from('enrollments')
+    .update({ completed: newValue })
+    .eq('user_id', currentUser.id)
+    .eq('course_id', courseId)
+
+  if (error) {
+    console.error('Failed to update completion:', error.message)
+  } else {
+    isCompleted.value = newValue
+  }
+
+  savingComplete.value = false
+}
+
+// ── Video controls ─────────────────────
+function togglePlay() {
   if (!videoEl.value) return
   if (isPlaying.value) {
     videoEl.value.pause()
@@ -344,22 +290,21 @@ function togglePlay(): void {
   }
 }
 
-function onTimeUpdate(): void {
+function onTimeUpdate() {
   if (videoEl.value) currentTime.value = videoEl.value.currentTime
 }
 
-function onMetaLoaded(): void {
+function onMetaLoaded() {
   if (videoEl.value) duration.value = videoEl.value.duration
 }
 
-function seekTo(e: MouseEvent): void {
+function seekTo(e: MouseEvent) {
   const bar   = e.currentTarget as HTMLElement
-  const rect  = bar.getBoundingClientRect()
-  const ratio = (e.clientX - rect.left) / rect.width
+  const ratio = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth
   if (videoEl.value) videoEl.value.currentTime = ratio * duration.value
 }
 
-function toggleFullscreen(): void {
+function toggleFullscreen() {
   videoEl.value?.requestFullscreen()
 }
 
@@ -367,27 +312,5 @@ function formatTime(secs: number): string {
   const m = Math.floor(secs / 60)
   const s = Math.floor(secs % 60)
   return `${m}:${s.toString().padStart(2, '0')}`
-}
-
-// ── Lesson Controls ────────────────────
-function selectLesson(lesson: Lesson): void {
-  currentLesson.value = { ...lesson }
-  isPlaying.value  = false
-  currentTime.value = 0
-
-  // ✅ nextTick ensures the new :src is in the DOM before calling .load()
-  nextTick(() => {
-    videoEl.value?.load()
-  })
-}
-
-function markComplete(): void {
-  const idx = lessons.value.findIndex(l => l.id === currentLesson.value.id)
-  if (idx === -1) return
-  const lesson = lessons.value[idx]
-  if (lesson) {
-    lesson.completed = !lesson.completed
-    currentLesson.value.completed = lesson.completed
-  }
 }
 </script>

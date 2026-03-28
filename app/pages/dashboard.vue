@@ -5,7 +5,6 @@
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between py-3">
 
-        <!-- Logo + Search -->
         <div class="flex items-center gap-3 sm:gap-5">
           <NuxtLink to="/" class="flex items-center gap-2">
             <div class="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
@@ -18,53 +17,30 @@
             </div>
             <span class="font-bold text-gray-900 text-sm">DigitalEd Hub</span>
           </NuxtLink>
-
-          <div class="hidden sm:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-48">
-            <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" placeholder="Search courses..." class="bg-transparent outline-none text-xs text-gray-500 w-full"/>
-          </div>
         </div>
 
         <!-- Desktop Nav -->
         <div class="hidden md:flex items-center gap-4">
           <NuxtLink to="/community" class="text-sm font-medium text-gray-700 hover:text-blue-600">Community</NuxtLink>
-
           <div class="relative">
             <button @click="profileOpen = !profileOpen" class="flex items-center gap-2 focus:outline-none">
-              <img src="https://i.pravatar.cc/32?img=5" class="w-8 h-8 rounded-full border-2 border-gray-200"/>
+              <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                {{ userEmail.charAt(0).toUpperCase() }}
+              </div>
               <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </button>
-
             <div v-if="profileOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 z-50">
               <div class="px-4 py-2.5 border-b border-gray-100">
                 <p class="text-xs font-semibold text-gray-900 truncate">{{ userEmail }}</p>
                 <p class="text-xs text-gray-400">Student</p>
               </div>
-              <NuxtLink to="/dashboard" @click="profileOpen = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-                Dashboard
-              </NuxtLink>
               <NuxtLink to="/courses" @click="profileOpen = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                </svg>
-                My Courses
+                Browse Courses
               </NuxtLink>
               <div class="border-t border-gray-100 mt-1">
                 <button @click="handleLogout" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                  </svg>
                   Log out
                 </button>
               </div>
@@ -85,18 +61,10 @@
 
       <!-- Mobile Menu -->
       <div v-show="isOpen" class="md:hidden border-t border-gray-100 px-4 py-3 space-y-3 bg-white">
-        <NuxtLink to="/dashboard" @click="isOpen = false" class="block text-sm text-gray-700 font-medium">My Courses</NuxtLink>
         <NuxtLink to="/community" @click="isOpen = false" class="block text-sm text-gray-700 font-medium">Community</NuxtLink>
         <div class="border-t border-gray-100 pt-3">
           <p class="text-xs text-gray-400 mb-2">{{ userEmail }}</p>
-          <button @click="handleLogout" class="flex items-center gap-2 text-sm text-red-500 font-medium">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Log out
-          </button>
+          <button @click="handleLogout" class="flex items-center gap-2 text-sm text-red-500 font-medium">Log out</button>
         </div>
       </div>
     </nav>
@@ -126,30 +94,58 @@
 
         <div v-else class="flex flex-col gap-4 sm:grid sm:grid-cols-2 xl:grid-cols-3">
           <div
-            v-for="course in enrolledCourses"
-            :key="course.id"
-            @click="navigateTo(`/courses/${course.course_id}/learn`)"
+            v-for="enrollment in enrolledCourses"
+            :key="enrollment.id"
+            @click="navigateTo(`/courses/${enrollment.course_id}/learn`)"
             class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md hover:border-blue-200 transition-all cursor-pointer group"
           >
-            <div class="relative">
-              <img :src="getCourseImage(course.course_id)" class="w-full h-36 object-cover" :alt="course.course_title"/>
+            <!-- Thumbnail -->
+            <div class="relative w-full h-36 bg-blue-50 overflow-hidden">
+              <img
+                v-if="enrollment.courses?.thumbnail"
+                :src="enrollment.courses.thumbnail"
+                :alt="enrollment.course_title"
+                class="w-full h-full object-cover"
+              />
+              <div v-else class="w-full h-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              </div>
+              <!-- Hover overlay -->
               <div class="absolute inset-0 bg-blue-600/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <div class="flex items-center gap-2 bg-white text-blue-600 text-xs font-bold px-4 py-2 rounded-full shadow">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5,3 19,12 5,21"/>
                   </svg>
-                  Resume Course
+                  {{ enrollment.completed ? 'Review Course' : 'Resume Course' }}
                 </div>
               </div>
             </div>
+
             <div class="p-4">
               <h3 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                {{ course.course_title }}
+                {{ enrollment.course_title }}
               </h3>
-              <p class="text-xs text-gray-400 mb-3">Enrolled {{ formatDate(course.enrolled_at) }}</p>
+              <p class="text-xs text-gray-400 mb-3">Enrolled {{ formatDate(enrollment.enrolled_at) }}</p>
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full">✓ Enrolled</span>
-                <span class="text-xs text-gray-400">₦{{ course.amount?.toLocaleString() }}</span>
+
+                <!-- ✅ Completed vs Enrolled badge -->
+                <span
+                  v-if="enrollment.completed"
+                  class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full flex items-center gap-1"
+                >
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Completed
+                </span>
+                <span v-else class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                  ✓ Enrolled
+                </span>
+
+                <span class="text-xs text-gray-400">₦{{ enrollment.amount?.toLocaleString() }}</span>
               </div>
             </div>
           </div>
@@ -181,7 +177,6 @@
             :key="post.id"
             class="pb-4 border-b border-gray-100 last:border-none last:pb-0 mb-4 last:mb-0"
           >
-            <!-- Post header -->
             <div class="flex gap-3 mb-2">
               <div
                 class="w-9 h-9 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
@@ -193,25 +188,17 @@
               </div>
             </div>
 
-            <!-- Post text -->
             <p class="text-xs text-gray-600 leading-relaxed mb-3 ml-12">{{ post.text }}</p>
 
-            <!-- Actions — comment count derived from replies.length -->
             <div class="flex items-center gap-5 ml-12">
               <button
                 @click="toggleLike(post)"
                 class="flex items-center gap-1.5 transition-colors duration-200 group"
                 :class="post.likedByMe ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'"
               >
-                <svg
-                  class="w-4 h-4 transition-transform duration-150 group-active:scale-125"
-                  viewBox="0 0 24 24"
-                  :fill="post.likedByMe ? 'currentColor' : 'none'"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg class="w-4 h-4 transition-transform duration-150 group-active:scale-125" viewBox="0 0 24 24"
+                  :fill="post.likedByMe ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
                 <span class="text-xs font-medium tabular-nums">{{ post.likes }}</span>
@@ -225,19 +212,12 @@
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
-                <!-- ✅ Always derived from actual replies array length -->
                 <span class="text-xs font-medium tabular-nums">{{ post.replies.length }}</span>
               </button>
             </div>
 
-            <!-- Reply box -->
             <div v-if="activeReply === post.id" class="mt-3 ml-12 flex flex-col gap-2">
-
-              <div
-                v-for="reply in post.replies"
-                :key="reply.id"
-                class="flex gap-2.5 bg-gray-50 rounded-lg px-3 py-2.5"
-              >
+              <div v-for="reply in post.replies" :key="reply.id" class="flex gap-2.5 bg-gray-50 rounded-lg px-3 py-2.5">
                 <div
                   class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-white font-bold flex-shrink-0"
                   :style="{ backgroundColor: stringToColor(reply.name) }"
@@ -263,12 +243,9 @@
                   @click="submitReply(post)"
                   :disabled="!replyTexts[post.id]?.trim()"
                   class="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
-                >
-                  Send
-                </button>
+                >Send</button>
               </div>
             </div>
-
           </div>
         </section>
 
@@ -295,7 +272,6 @@
     <footer class="bg-white border-t border-gray-200 text-center py-4">
       <p class="text-xs text-gray-400">© 2026 DigitalEd Hub. All rights reserved.</p>
     </footer>
-
   </div>
 </template>
 
@@ -309,30 +285,34 @@ definePageMeta({
 
 // ── Types ──────────────────────────────
 interface Enrollment {
-  id: string
-  course_id: number
+  id:           string
+  course_id:    string
   course_title: string
-  amount: number
-  enrolled_at: string
+  amount:       number
+  enrolled_at:  string
+  completed:    boolean        // ✅ new
+  courses: {                   // ✅ joined thumbnail
+    thumbnail: string | null
+  } | null
 }
 
 interface FeedReply {
-  id: string
-  name: string
-  text: string
+  id:         string
+  name:       string
+  text:       string
   created_at: string
 }
 
 interface FeedPost {
-  id: string
-  initials: string
-  name: string
-  text: string
-  likes: number
+  id:          string
+  initials:    string
+  name:        string
+  text:        string
+  likes:       number
   avatarColor: string
-  likedByMe: boolean
-  replies: FeedReply[]
-  timeAgo: string
+  likedByMe:   boolean
+  replies:     FeedReply[]
+  timeAgo:     string
 }
 
 // ── State ──────────────────────────────
@@ -352,20 +332,17 @@ const userEmail = computed(() => user.value?.email ?? '')
 
 async function handleLogout() {
   await supabase.auth.signOut()
-  await navigateTo('/admin/login')
+  await navigateTo('/')
 }
 
-// ── Avatar color ────────────────────────
+// ── Helpers ────────────────────────────
 function stringToColor(str: string): string {
-  const colors = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+  const colors = ['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899']
   let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
   return colors[Math.abs(hash) % colors.length] ?? '#4f46e5'
 }
 
-// ── Format time ─────────────────────────
 function formatTime(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
   if (diff < 60)        return 'Just now'
@@ -375,7 +352,13 @@ function formatTime(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
 }
 
-// ── Fetch data on mount ─────────────────
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('en-NG', {
+    day: 'numeric', month: 'short', year: 'numeric'
+  })
+}
+
+// ── Fetch on mount ─────────────────────
 onMounted(async () => {
   const { data: { session } } = await supabase.auth.getSession()
   const currentUser = session?.user ?? user.value
@@ -386,17 +369,31 @@ onMounted(async () => {
     return
   }
 
-  // Fetch enrolled courses
-  const { data: enrollmentData } = await supabase
+  // ✅ Fetch enrollments WITH completed + joined thumbnail from courses table
+  const { data: enrollmentData, error: enrollmentError } = await supabase
     .from('enrollments')
-    .select('id, course_id, course_title, amount, enrolled_at')
+    .select(`
+      id,
+      course_id,
+      course_title,
+      amount,
+      enrolled_at,
+      completed,
+      courses (
+        thumbnail
+      )
+    `)
     .eq('user_id', currentUser.id)
     .order('enrolled_at', { ascending: false })
 
-  if (enrollmentData) enrolledCourses.value = enrollmentData
+  if (enrollmentError) {
+    console.error('Enrollment fetch error:', enrollmentError.message)
+  }
+
+  enrolledCourses.value  = (enrollmentData ?? []) as Enrollment[]
   isLoadingCourses.value = false
 
-  // Fetch community feed
+  // ── Community feed ─────────────────────
   const { data: communityData } = await supabase
     .from('community_posts')
     .select('id, user_email, text, likes, created_at')
@@ -406,7 +403,6 @@ onMounted(async () => {
   if (communityData) {
     const postIds = communityData.map((p: any) => String(p.id))
 
-    // ✅ Fetch ALL replies for these posts — count derived from this array
     const { data: repliesData } = await supabase
       .from('post_replies')
       .select('id, post_id, user_email, text, created_at')
@@ -431,34 +427,29 @@ onMounted(async () => {
         likes:       Number(p.likes ?? 0),
         avatarColor: stringToColor(String(p.user_email ?? 'default')),
         likedByMe:   false,
-        replies:     postReplies,  // ✅ count = replies.length in template
+        replies:     postReplies,
         timeAgo:     formatTime(String(p.created_at)),
       }
     })
   }
 
   isLoadingFeed.value = false
-}) // ← onMounted closes HERE
+})
 
-// ── Like toggle ─────────────────────────
+// ── Like ───────────────────────────────
 async function toggleLike(post: FeedPost) {
   const wasLiked = post.likedByMe
   post.likedByMe = !wasLiked
   post.likes += wasLiked ? -1 : 1
-
-  await supabase
-    .from('community_posts')
-    .update({ likes: post.likes })
-    .eq('id', post.id)
+  await supabase.from('community_posts').update({ likes: post.likes }).eq('id', post.id)
 }
 
-// ── Reply toggle ────────────────────────
+// ── Reply ──────────────────────────────
 function toggleReply(postId: string) {
   activeReply.value = activeReply.value === postId ? null : postId
   if (!replyTexts.value[postId]) replyTexts.value[postId] = ''
 }
 
-// ── Submit reply ────────────────────────
 async function submitReply(post: FeedPost) {
   const text = replyTexts.value[post.id]?.trim()
   if (!text) return
@@ -493,31 +484,10 @@ async function submitReply(post: FeedPost) {
     })
   }
 
-  // ✅ No need to update comments column — template uses replies.length
   replyTexts.value[post.id] = ''
 }
 
-// ── Course image map ────────────────────
-const courseImages: Record<number, string> = {
-  1: 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?w=400&q=80',
-  2: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80',
-  3: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&q=80',
-  4: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&q=80',
-  5: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80',
-}
-
-function getCourseImage(courseId: number): string {
-  return courseImages[courseId] ?? 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&q=80'
-}
-
-// ── Format date ─────────────────────────
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-NG', {
-    day: 'numeric', month: 'short', year: 'numeric'
-  })
-}
-
-// ── Static resources ────────────────────
+// ── Static resources ───────────────────
 const resources = [
   { id: 1, icon: '📄', name: 'Lesson Plan Template', meta: 'PDF • 2.1MB'  },
   { id: 2, icon: '📊', name: 'Grading Rubric',        meta: 'XLSX • 203KB' },
