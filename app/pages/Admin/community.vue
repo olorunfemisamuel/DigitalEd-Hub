@@ -86,8 +86,7 @@
           <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
             {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
           </div>
-          <button @click="handleLogout"
-            class="text-red-500 text-xs font-semibold px-3 py-1.5 hover:text-red-600 transition-colors">
+          <button @click="handleLogout" class="text-red-500 text-xs font-semibold px-3 py-1.5 hover:text-red-600 transition-colors">
             Log out
           </button>
         </div>
@@ -96,21 +95,20 @@
       <!-- PAGE BODY -->
       <main class="flex-1 px-4 md:px-6 py-6">
 
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
+        <!-- Header + Stats -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h2 class="text-2xl font-extrabold text-gray-900">Community Posts</h2>
-            <p class="text-sm text-gray-500 mt-1">Moderate discussions from your students and educators.</p>
+            <p class="text-sm text-gray-500 mt-1">Moderate, like, and reply to student discussions.</p>
           </div>
-          <!-- Live stats -->
-          <div class="hidden sm:flex items-center gap-4">
+          <div class="flex items-center gap-6">
             <div class="text-center">
               <p class="text-2xl font-extrabold text-gray-900">{{ posts.length }}</p>
-              <p class="text-xs text-gray-400">Total Posts</p>
+              <p class="text-xs text-gray-400">Posts</p>
             </div>
             <div class="text-center">
               <p class="text-2xl font-extrabold text-blue-600">{{ totalReplies }}</p>
-              <p class="text-xs text-gray-400">Total Replies</p>
+              <p class="text-xs text-gray-400">Replies</p>
             </div>
           </div>
         </div>
@@ -145,14 +143,13 @@
           <div
             v-for="post in filteredPosts"
             :key="post.id"
-            class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+            class="bg-white border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
           >
-            <div class="flex justify-between items-start gap-4">
-
-              <!-- Left: author + content -->
+            <!-- Post header + delete -->
+            <div class="flex justify-between items-start gap-3">
               <div class="flex items-start gap-3 flex-1 min-w-0">
                 <div
-                  class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                   :style="{ backgroundColor: stringToColor(post.user_email) }"
                 >
                   {{ post.user_email?.charAt(0).toUpperCase() }}
@@ -163,36 +160,14 @@
                     <span class="text-xs text-gray-400">{{ formatTime(post.created_at) }}</span>
                   </div>
                   <p class="text-sm text-gray-700 leading-relaxed">{{ post.text }}</p>
-
-                  <!-- Stats -->
-                  <div class="flex gap-5 mt-3 text-xs text-gray-400">
-                    <div class="flex items-center gap-1">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                      </svg>
-                      {{ post.likes }} likes
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                      </svg>
-                      {{ post.reply_count }} replies
-                    </div>
-                    <div class="flex items-center gap-1 text-gray-300">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                      </svg>
-                      {{ formatTime(post.created_at) }}
-                    </div>
-                  </div>
                 </div>
               </div>
 
-              <!-- Right: Delete button -->
+              <!-- Delete -->
               <button
                 @click="deletePost(post)"
                 :disabled="deletingId === post.id"
-                class="flex-shrink-0 flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold px-3 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex-shrink-0 flex items-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
               >
                 <svg v-if="deletingId === post.id" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
@@ -203,10 +178,101 @@
                   <path d="M10 11v6"/><path d="M14 11v6"/>
                   <path d="M9 6V4h6v2"/>
                 </svg>
-                {{ deletingId === post.id ? 'Deleting...' : 'Delete' }}
+                <span class="hidden sm:inline">{{ deletingId === post.id ? 'Deleting...' : 'Delete' }}</span>
+              </button>
+            </div>
+
+            <!-- Action bar: like + reply toggle -->
+            <div class="flex items-center gap-5 mt-4 pt-3 border-t border-gray-100">
+
+              <!-- Like button -->
+              <button
+                @click="toggleLike(post)"
+                :disabled="likingId === post.id"
+                class="flex items-center gap-1.5 transition-colors duration-200 group disabled:opacity-50"
+                :class="post.likedByAdmin ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'"
+              >
+                <svg
+                  class="w-4 h-4 transition-transform duration-150 group-active:scale-125"
+                  viewBox="0 0 24 24"
+                  :fill="post.likedByAdmin ? 'currentColor' : 'none'"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span class="text-xs font-medium tabular-nums">{{ post.likes }}</span>
+              </button>
+
+              <!-- Reply toggle -->
+              <button
+                @click="toggleReply(post.id)"
+                class="flex items-center gap-1.5 transition-colors duration-200"
+                :class="activeReply === post.id ? 'text-blue-600' : 'text-gray-400 hover:text-blue-500'"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span class="text-xs font-medium tabular-nums">{{ post.reply_count }}</span>
+                <span class="text-xs text-gray-400 hidden sm:inline">{{ activeReply === post.id ? 'Hide' : 'Reply' }}</span>
               </button>
 
             </div>
+
+            <!-- Reply section -->
+            <div v-if="activeReply === post.id" class="mt-4 flex flex-col gap-2">
+
+              <!-- Existing replies -->
+              <div v-if="post.replies.length === 0" class="text-xs text-gray-400 text-center py-2">
+                No replies yet. Be the first!
+              </div>
+              <div
+                v-for="reply in post.replies"
+                :key="reply.id"
+                class="flex gap-2.5 bg-gray-50 rounded-lg px-3 py-2.5"
+              >
+                <div
+                  class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                  :style="{ backgroundColor: stringToColor(reply.user_email) }"
+                >
+                  {{ reply.user_email?.charAt(0).toUpperCase() }}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs font-semibold text-gray-800">{{ reply.user_email?.split('@')[0] }}</p>
+                    <span v-if="reply.is_admin" class="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-600 rounded font-semibold">ADMIN</span>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ reply.text }}</p>
+                  <p class="text-[10px] text-gray-400 mt-1">{{ formatTime(reply.created_at) }}</p>
+                </div>
+              </div>
+
+              <!-- Reply input -->
+              <div class="flex gap-2 items-start mt-1">
+                <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+                  {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
+                </div>
+                <input
+                  v-model="replyTexts[post.id]"
+                  placeholder="Write a reply as admin..."
+                  class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  @keydown.enter="submitReply(post)"
+                />
+                <button
+                  @click="submitReply(post)"
+                  :disabled="!replyTexts[post.id]?.trim() || submittingReply === post.id"
+                  class="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  <svg v-if="submittingReply === post.id" class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  </svg>
+                  Send
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -220,20 +286,13 @@
           <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
             <h3 class="font-bold text-gray-900 mb-2">Delete this post?</h3>
             <p class="text-sm text-gray-500 mb-1">Posted by <strong>{{ confirmPost.user_email?.split('@')[0] }}</strong>:</p>
-            <p class="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 mb-5 line-clamp-3">{{ confirmPost.text }}</p>
-            <p class="text-xs text-red-500 mb-5">This will also delete all replies to this post. This cannot be undone.</p>
+            <p class="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 mb-4 line-clamp-3">{{ confirmPost.text }}</p>
+            <p class="text-xs text-red-500 mb-5">This will also delete all replies. This cannot be undone.</p>
             <div class="flex gap-3">
-              <button
-                @click="confirmPost = null"
-                class="flex-1 border border-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
-              >
+              <button @click="confirmPost = null" class="flex-1 border border-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors">
                 Cancel
               </button>
-              <button
-                @click="confirmDelete"
-                :disabled="deletingId !== null"
-                class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-60"
-              >
+              <button @click="confirmDelete" :disabled="deletingId !== null" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-60">
                 Yes, Delete
               </button>
             </div>
@@ -252,22 +311,36 @@ definePageMeta({ layout: false })
 
 const config     = useRuntimeConfig()
 const supabase   = useSupabaseClient()
-const adminEmail = config.public.adminEmail
+const adminEmail = config.public.adminEmail as string
 
-const sidebarOpen  = ref(false)
-const isLoading    = ref(true)
-const searchQuery  = ref('')
-const deletingId   = ref<string | null>(null)
-const confirmPost  = ref<Post | null>(null)
+const sidebarOpen     = ref(false)
+const isLoading       = ref(true)
+const searchQuery     = ref('')
+const deletingId      = ref<string | null>(null)
+const confirmPost     = ref<Post | null>(null)
+const activeReply     = ref<string | null>(null)
+const replyTexts      = ref<Record<string, string>>({})
+const submittingReply = ref<string | null>(null)
+const likingId        = ref<string | null>(null)
+
+interface Reply {
+  id:         string
+  user_email: string
+  text:       string
+  created_at: string
+  is_admin:   boolean
+}
 
 interface Post {
-  id:          string
-  user_id:     string
-  user_email:  string
-  text:        string
-  likes:       number
-  reply_count: number
-  created_at:  string
+  id:           string
+  user_id:      string
+  user_email:   string
+  text:         string
+  likes:        number
+  reply_count:  number
+  created_at:   string
+  likedByAdmin: boolean
+  replies:      Reply[]
 }
 
 const posts = ref<Post[]>([])
@@ -302,56 +375,164 @@ function formatTime(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-// ── Fetch posts with reply counts ──────
+// ── Load posts + replies + admin likes ─
 onMounted(async () => {
   await loadPosts()
   isLoading.value = false
 })
 
+// ── Load posts — fetch admin likes via server route ─
 async function loadPosts() {
-  // Fetch all posts
   const { data: postsData, error } = await supabase
     .from('community_posts')
     .select('id, user_id, user_email, text, likes, created_at')
     .order('created_at', { ascending: false })
 
-  if (error) {
-    console.error('Posts fetch error:', error.message)
-    return
-  }
-
-  if (!postsData || postsData.length === 0) {
+  if (error || !postsData?.length) {
     posts.value = []
     return
   }
 
-  // Fetch reply counts for all posts
   const postIds = postsData.map((p: any) => p.id)
 
+  // Fetch replies
   const { data: repliesData } = await supabase
     .from('post_replies')
-    .select('post_id')
+    .select('id, post_id, user_email, text, created_at, is_admin')
     .in('post_id', postIds)
+    .order('created_at', { ascending: true })
 
-  // Count replies per post
+  // ✅ Fetch admin likes via server route (bypasses RLS)
+  const { likedPostIds } = await $fetch<{ likedPostIds: string[] }>(
+    '/api/admin-community-action',
+    {
+      method: 'POST',
+      body: { action: 'getAdminLikes' }
+    }
+  )
+
   const replyCountMap: Record<string, number> = {}
+  const repliesByPost: Record<string, Reply[]> = {}
+
   for (const r of (repliesData ?? [])) {
     const pid = String(r.post_id)
     replyCountMap[pid] = (replyCountMap[pid] ?? 0) + 1
+    if (!repliesByPost[pid]) repliesByPost[pid] = []
+    repliesByPost[pid].push({
+      id:         String(r.id),
+      user_email: String(r.user_email ?? ''),
+      text:       String(r.text ?? ''),
+      created_at: String(r.created_at),
+      is_admin:   Boolean(r.is_admin),
+    })
   }
 
   posts.value = postsData.map((p: any) => ({
-    id:          String(p.id),
-    user_id:     String(p.user_id),
-    user_email:  String(p.user_email ?? ''),
-    text:        String(p.text ?? ''),
-    likes:       Number(p.likes ?? 0),
-    reply_count: replyCountMap[String(p.id)] ?? 0,
-    created_at:  String(p.created_at),
+    id:           String(p.id),
+    user_id:      String(p.user_id),
+    user_email:   String(p.user_email ?? ''),
+    text:         String(p.text ?? ''),
+    likes:        Number(p.likes ?? 0),
+    reply_count:  replyCountMap[String(p.id)] ?? 0,
+    created_at:   String(p.created_at),
+    likedByAdmin: likedPostIds.includes(String(p.id)),
+    replies:      repliesByPost[String(p.id)] ?? [],
   }))
 }
 
-// ── Delete flow — confirm first ────────
+
+// ── Like — saved to post_likes + syncs count ─
+async function toggleLike(post: Post) {
+  if (likingId.value === post.id) return
+  likingId.value = post.id
+
+  try {
+    const result = await $fetch<{ liked: boolean }>(
+      '/api/admin-community-action',
+      { method: 'POST', body: { action: 'like', postId: post.id } }
+    )
+    // ✅ Only update after server confirms — no optimistic update
+    post.likedByAdmin = result.liked
+    post.likes += result.liked ? 1 : -1
+  } catch (e) {
+    console.error('Like failed:', e)
+  }
+
+  likingId.value = null
+}
+
+
+// ── Toggle reply section + load replies ─
+async function toggleReply(postId: string) {
+  if (activeReply.value === postId) {
+    activeReply.value = null
+    return
+  }
+
+  activeReply.value = postId
+  if (!replyTexts.value[postId]) replyTexts.value[postId] = ''
+
+  // Lazy load replies when first opened
+  const post = posts.value.find(p => p.id === postId)
+  if (!post || post.replies.length > 0) return
+
+  const { data: repliesData } = await supabase
+    .from('post_replies')
+    .select('id, post_id, user_email, text, created_at, is_admin')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true })
+
+  if (repliesData) {
+    post.replies = repliesData.map((r: any) => ({
+      id:         String(r.id),
+      user_email: String(r.user_email ?? ''),
+      text:       String(r.text ?? ''),
+      created_at: String(r.created_at),
+      is_admin:   Boolean(r.is_admin),
+    }))
+  }
+}
+
+// ── Submit reply — via server route ────
+async function submitReply(post: Post) {
+  const text = replyTexts.value[post.id]?.trim()
+  if (!text || submittingReply.value === post.id) return
+
+  submittingReply.value = post.id
+
+  try {
+    const result = await $fetch<{ reply: any }>(
+      '/api/admin-community-action',
+      {
+        method: 'POST',
+        body: {
+          action:     'reply',
+          postId:     post.id,
+          text,
+          adminEmail, // pass admin email so it's stored correctly
+        }
+      }
+    )
+
+    if (result.reply) {
+      post.replies.push({
+        id:         String(result.reply.id),
+        user_email: adminEmail,
+        text:       String(result.reply.text),
+        created_at: String(result.reply.created_at),
+        is_admin:   true,
+      })
+      post.reply_count += 1
+      replyTexts.value[post.id] = ''
+    }
+  } catch (e) {
+    console.error('Reply failed:', e)
+  }
+
+  submittingReply.value = null
+}
+
+// ── Delete ─────────────────────────────
 function deletePost(post: Post) {
   confirmPost.value = post
 }
@@ -361,22 +542,14 @@ async function confirmDelete() {
   const post = confirmPost.value
   deletingId.value = post.id
 
-  // ✅ Delete replies first (cascade may handle this but let's be explicit)
-  await supabase
-    .from('post_replies')
-    .delete()
-    .eq('post_id', post.id)
+  await supabase.from('post_replies').delete().eq('post_id', post.id)
+  await supabase.from('post_likes').delete().eq('post_id', post.id)
 
-  // ✅ Delete the post
-  const { error } = await supabase
-    .from('community_posts')
-    .delete()
-    .eq('id', post.id)
+  const { error } = await supabase.from('community_posts').delete().eq('id', post.id)
 
   if (error) {
     console.error('Delete failed:', error.message)
   } else {
-    // Remove from local list immediately
     posts.value = posts.value.filter(p => p.id !== post.id)
   }
 
@@ -386,7 +559,7 @@ async function confirmDelete() {
 
 async function handleLogout() {
   await $fetch('/api/admin-logout', { method: 'POST' })
-  await useSupabaseClient().auth.signOut()
+  await supabase.auth.signOut()
   await navigateTo('/admin/login')
 }
 </script>
