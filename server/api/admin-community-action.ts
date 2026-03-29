@@ -67,5 +67,49 @@ export default defineEventHandler(async (event) => {
 
   return { reply: data }
 }
+
+// ── Delete post ───────────────────────
+if (action === 'delete') {
+  // Delete replies first
+  await supabase.from('post_replies').delete().eq('post_id', postId)
+  await supabase.from('post_likes').delete().eq('post_id', postId)
+
+  const { error } = await supabase
+    .from('community_posts')
+    .delete()
+    .eq('id', postId)
+
+  if (error) {
+    console.error('Delete error:', error.message)
+    throw createError({ statusCode: 500, message: error.message })
+  }
+
+  return { deleted: true }
+}
+
+// ── Admin post to community ────────────
+if (action === 'post') {
+  const { data, error } = await supabase
+    .from('community_posts')
+    .insert({
+      user_id:    '00000000-0000-0000-0000-000000000000',
+      user_email: adminEmail,
+      text,
+      likes:    0,
+      comments: 0,
+      is_admin: true,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Admin post error:', error.message)
+    throw createError({ statusCode: 500, message: error.message })
+  }
+
+  return { post: data }
+}
+
   throw createError({ statusCode: 400, message: 'Unknown action' })
 })
+

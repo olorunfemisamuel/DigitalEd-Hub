@@ -179,13 +179,24 @@
             {{ post.user_email?.charAt(0).toUpperCase() }}
           </div>
           <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-sm font-bold text-gray-900">{{ post.user_email?.split('@')[0] }}</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-gray-100 text-gray-600">
-                Educator
-              </span>
-            </div>
-            <p class="text-xs text-gray-400 mt-0.5">{{ formatTime(post.created_at) }}</p>
+           <div class="flex items-center gap-2 flex-wrap">
+  <span class="text-sm font-bold text-gray-900">{{ post.user_email?.split('@')[0] }}</span>
+  
+  <!-- ✅ Admin badge if admin post, Educator badge otherwise -->
+  <span
+    v-if="post.is_admin"
+    class="text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-blue-100 text-blue-600"
+  >
+    Admin
+  </span>
+  <span
+    v-else
+    class="text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-gray-100 text-gray-600"
+  >
+    Educator
+  </span>
+</div>
+<p class="text-xs text-gray-400 mt-0.5">{{ formatTime(post.created_at) }}</p>
           </div>
         </div>
 
@@ -319,6 +330,7 @@ interface Post {
   created_at: string
   likedByMe:  boolean
   replies:    Reply[]
+  is_admin:   boolean 
 }
 
 // ── State ──────────────────────────────
@@ -377,6 +389,7 @@ async function loadPosts() {
   const { data: postsData, error } = await supabase
     .from('community_posts')
     .select('id, user_id, user_email, text, likes, created_at')
+    .select('id, user_id, user_email, text, likes, created_at, is_admin')
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -419,6 +432,7 @@ async function loadPosts() {
     likes:      Number(p.likes ?? 0),
     created_at: String(p.created_at),
     likedByMe:  likedPostIds.includes(String(p.id)),
+     is_admin:   Boolean(p.is_admin),
     replies:    (repliesData ?? [])
       .filter((r: any) => r.post_id === p.id)
       .map((r: any) => ({
@@ -466,6 +480,7 @@ async function submitPost() {
       likes:      0,
       created_at: String(data.created_at),
       likedByMe:  false,
+       is_admin:   false,
       replies:    [],
     })
     newPost.value = ''

@@ -128,6 +128,51 @@
           />
         </div>
 
+
+
+        <!-- COMMUNITY POST COMPOSER -->
+<div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mb-6">
+  <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+    <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    Post to Community
+  </h3>
+
+  <div class="flex items-start gap-3">
+    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+      {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
+    </div>
+    <div class="flex-1">
+      <textarea
+        v-model="communityPost"
+        placeholder="Share an announcement, tip, or update with your students..."
+        rows="3"
+        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+      />
+      <div class="flex items-center justify-between mt-2">
+        <div>
+          <p v-if="postSuccess" class="text-xs text-green-600">{{ postSuccess }}</p>
+          <p v-if="postError" class="text-xs text-red-500">{{ postError }}</p>
+          <p v-if="!postSuccess && !postError" class="text-xs text-gray-400">
+            Posts appear instantly on the student community page.
+          </p>
+        </div>
+        <button
+          @click="submitCommunityPost"
+          :disabled="!communityPost.trim() || isPosting"
+          class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors flex items-center gap-2 flex-shrink-0"
+        >
+          <svg v-if="isPosting" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          {{ isPosting ? 'Posting...' : 'Post Now' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
         <!-- Loading -->
         <div v-if="isLoading" class="flex justify-center py-20">
           <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
@@ -542,19 +587,74 @@ async function confirmDelete() {
   const post = confirmPost.value
   deletingId.value = post.id
 
-  await supabase.from('post_replies').delete().eq('post_id', post.id)
-  await supabase.from('post_likes').delete().eq('post_id', post.id)
+  try {
+    // ✅ Use server route with service role — bypasses RLS
+    await $fetch('/api/admin-community-action', {
+      method: 'POST',
+      body: { action: 'delete', postId: post.id }
+    })
 
-  const { error } = await supabase.from('community_posts').delete().eq('id', post.id)
-
-  if (error) {
-    console.error('Delete failed:', error.message)
-  } else {
+    // ✅ Only remove from local list after confirmed server delete
     posts.value = posts.value.filter(p => p.id !== post.id)
+  } catch (e) {
+    console.error('Delete failed:', e)
   }
 
   deletingId.value  = null
   confirmPost.value = null
+}
+
+// ── Admin post to community ────────────
+const communityPost = ref('')
+const isPosting     = ref(false)
+const postSuccess   = ref('')
+const postError     = ref('')
+
+async function submitCommunityPost() {
+  if (!communityPost.value.trim() || isPosting.value) return
+
+  isPosting.value  = true
+  postSuccess.value = ''
+  postError.value   = ''
+
+  try {
+    const result = await $fetch<{ post: any }>(
+      '/api/admin-community-action',
+      {
+        method: 'POST',
+        body: {
+          action:     'post',
+          text:       communityPost.value.trim(),
+          adminEmail,
+        }
+      }
+    )
+
+    if (result.post) {
+      // ✅ Add to local list immediately so admin sees it without refresh
+      posts.value.unshift({
+        id:           String(result.post.id),
+        user_id:      '00000000-0000-0000-0000-000000000000',
+        user_email:   adminEmail,
+        text:         String(result.post.text),
+        likes:        0,
+        reply_count:  0,
+        created_at:   String(result.post.created_at),
+        likedByAdmin: false,
+        replies:      [],
+      })
+
+      communityPost.value = ''
+      postSuccess.value   = '✓ Posted successfully! Visible on community page now.'
+      setTimeout(() => { postSuccess.value = '' }, 3000)
+    }
+  } catch (e) {
+    console.error('Admin post failed:', e)
+    postError.value = 'Failed to post. Please try again.'
+    setTimeout(() => { postError.value = '' }, 3000)
+  }
+
+  isPosting.value = false
 }
 
 async function handleLogout() {

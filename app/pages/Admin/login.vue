@@ -153,6 +153,15 @@ const errorMsg     = ref('')
 
 const supabase = useSupabaseClient()
 
+onMounted(() => {
+  // ✅ Push a duplicate history entry so back button stays here
+  history.pushState(null, '', '/admin/login')
+
+  window.addEventListener('popstate', () => {
+    history.pushState(null, '', '/admin/login')
+  })
+})
+
 async function handleLogin() {
   if (!email.value || !password.value) {
     errorMsg.value = 'Please enter your email and password.'
