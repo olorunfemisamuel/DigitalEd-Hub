@@ -29,7 +29,7 @@
           </div>
           <!-- Quote -->
           <p class="text-gray-700 text-sm leading-relaxed mb-6">
-            "DigitalEd Hub completely changed how I approach my virtual classroom. The strategies I learned from Dr. Adeyemi were immediately applicable and my students love the new tools."
+            "DigitalEd Hub completely changed how I approach my virtual classroom. The strategies I learned from Mrs. Ufedo Obochi were immediately applicable and my students love the new tools."
           </p>
           <!-- Author -->
           <div class="flex items-center gap-3">

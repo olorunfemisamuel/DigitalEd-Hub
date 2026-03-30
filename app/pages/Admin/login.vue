@@ -50,9 +50,9 @@
               <label class="block text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
                 Password
               </label>
-              <button type="button" class="text-[11px] text-blue-600 font-medium hover:underline">
+              <!-- <button type="button" class="text-[11px] text-blue-600 font-medium hover:underline">
                 Forgot Password?
-              </button>
+              </button> -->
             </div>
             <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2.5 gap-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all bg-white">
               <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">

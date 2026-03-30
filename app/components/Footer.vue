@@ -72,9 +72,9 @@
         <h4 class="text-gray-900 font-semibold text-sm">Company</h4>
         <ul class="flex flex-col gap-3">
           <li><NuxtLink to="/about" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">About Us</NuxtLink></li>
-          <!-- <li><NuxtLink to="/mentors" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Our Mentors</NuxtLink></li>
-          <li><NuxtLink to="/careers" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Careers</NuxtLink></li>
-          <li><NuxtLink to="/blog" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Blog</NuxtLink></li> -->
+          <li><a href = # class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Our Mentors</a></li>
+          <li><a href = #  class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Careers</a></li>
+          <li><a href = # class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Blog</a></li>
         </ul>
       </div>
 
@@ -82,9 +82,9 @@
       <div class="flex flex-col gap-4">
         <h4 class="text-gray-900 font-semibold text-sm">Support</h4>
         <ul class="flex flex-col gap-3">
-          <li><NuxtLink to="/help" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Help Center</NuxtLink></li>
-          <li><NuxtLink to="/terms" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Terms of Service</NuxtLink></li>
-          <li><NuxtLink to="/privacy" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Privacy Policy</NuxtLink></li>
+          <li><a href = # class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Help Center</a></li>
+          <li><a href = # class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Terms of Service</a></li>
+          <li><a href = #  class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Privacy Policy</a></li>
           <li><NuxtLink to="/contact" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Contact Support</NuxtLink></li>
         </ul>
       </div>

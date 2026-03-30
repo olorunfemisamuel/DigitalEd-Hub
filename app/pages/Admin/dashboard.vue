@@ -83,19 +83,15 @@
           </button>
           <h1 class="text-sm font-semibold text-gray-800">Admin Dashboard</h1>
         </div>
-       <!-- TOP NAVBAR right side -->
+    
+<!-- Replace the right side of TOP NAVBAR with this clean version -->
 <div class="flex items-center gap-3">
-  <div class="text-right hidden sm:block">
-   <p class="text-xs font-semibold text-gray-800">
-  {{ adminEmail?.split('@')[0] }}
-</p>
-<div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-  {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
-</div>
+  <div class="hidden sm:block text-right">
+    <p class="text-xs font-semibold text-gray-800">{{ adminEmail?.split('@')[0] }}</p>
     <p class="text-[10px] text-gray-400">Super Administrator</p>
   </div>
   <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-   {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
+    {{ adminEmail?.charAt(0).toUpperCase() ?? 'A' }}
   </div>
   <button
     @click="handleLogout"
@@ -116,8 +112,8 @@
 
         <!-- Greeting -->
         <div class="mb-6">
-          <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Morning, Admin</h2>
-          <p class="text-sm text-gray-400 mt-0.5">Here is what's happening with DigitalEd Hub today.</p>
+          <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">{{ greeting }}, Mrs. Ufedo</h2>
+<p class="text-sm text-gray-400 mt-0.5">Here is what's happening with DigitalEd Hub today.</p>
         </div>
 
         <!-- STAT CARDS — 2 cols mobile, 4 cols desktop -->
@@ -204,7 +200,7 @@
           <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-5">
             <h3 class="text-sm font-bold text-gray-900 mb-4">Latest Interactions</h3>
 
-            <<div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4">
 
   <div
     v-for="item in latestInteractions"
@@ -226,9 +222,12 @@
 
 </div>
 
-            <button class="mt-5 text-xs text-blue-600 font-semibold hover:underline">
-              View all activity →
-            </button>
+            <NuxtLink 
+    to="/admin/community"
+    class="mt-5 text-xs text-blue-600 font-semibold hover:underline inline-flex items-center gap-1"
+  >
+    View all activity →
+  </NuxtLink>
           </div>
 
         </div>
@@ -251,6 +250,14 @@ const config  = useRuntimeConfig()
 const adminEmail = config.public.adminEmail
 const { isAdmin } = useIsAdmin()
 const sidebarOpen = ref(false)
+
+
+const greeting = computed(() => {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 17) return 'Good afternoon'
+  return 'Good evening'
+})
 
 //handle Logout function
 async function handleLogout() {
@@ -294,30 +301,38 @@ const { data: stats } = await useFetch<AdminStats>('/api/admin/stats')
 
 // ✅ Build chart bars from real enrollment growth data
 const chartBars = computed(() => {
-  if (!stats.value?.enrollmentGrowth?.length) return []
+  if (!stats.value?.enrollmentGrowth?.length) {
+    // ✅ Show empty bars so the chart still renders
+    return Array.from({ length: 15 }, (_, i) => ({
+      label:  String(i + 1),
+      height: 5,
+      active: false,
+    }))
+  }
 
-  // Group enrollments by day number in the last 30 days
-  const dayCounts: Record<number, number> = {}
-  const now = new Date()
+  const now = Date.now()
+  const MS_PER_DAY = 1000 * 60 * 60 * 24
+
+  // ✅ Count enrollments per day over last 30 days
+  // We show 15 bars, each representing 2 days
+  const buckets = Array(15).fill(0)
 
   stats.value.enrollmentGrowth.forEach((e: { created_at: string }) => {
-    const diffDays = Math.ceil(
-      (now.getTime() - new Date(e.created_at).getTime()) / (1000 * 60 * 60 * 24)
-    )
-    const dayNum = 30 - diffDays
-    if (dayNum >= 0) dayCounts[dayNum] = (dayCounts[dayNum] ?? 0) + 1
-  })
-
-  const max = Math.max(...Object.values(dayCounts), 1)
-
-  return Array.from({ length: 15 }, (_, i) => {
-    const day = Math.round(i * 2)
-    return {
-      label:  String(day + 1),
-      height: Math.max(10, Math.round(((dayCounts[day] ?? 0) / max) * 100)),
-      active: i >= 9,
+    const daysAgo = Math.floor((now - new Date(e.created_at).getTime()) / MS_PER_DAY)
+    if (daysAgo < 30) {
+      // Map daysAgo (0–29) to bucket index (14 = most recent, 0 = oldest)
+      const bucketIndex = 14 - Math.floor(daysAgo / 2)
+      if (bucketIndex >= 0) buckets[bucketIndex]++
     }
   })
+
+  const max = Math.max(...buckets, 1)
+
+  return buckets.map((count, i) => ({
+    label:  String((14 - i) * 2) + 'd',
+    height: Math.max(5, Math.round((count / max) * 100)),
+    active: i >= 10, // last 10 days highlighted in blue
+  }))
 })
 
 // ✅ Merge latest interactions from posts + enrollments
