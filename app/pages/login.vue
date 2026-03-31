@@ -57,6 +57,22 @@
   </button>
 </div>
 
+
+            <!-- Timeout notice -->
+<div
+  v-if="isTimeout"
+  class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-3"
+>
+  <svg class="w-4 h-4 text-amber-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12 6 12 12 16 14"/>
+  </svg>
+  <p class="text-sm text-amber-700 font-medium">
+    Your session expired after 20 minutes of inactivity. Please log in again.
+  </p>
+</div>
+
+
           <!-- Email -->
           <div class="flex flex-col gap-1.5">
             <label class="text-gray-700 text-sm font-medium">Email Address</label>
@@ -193,6 +209,10 @@ const showPassword    = ref(false)
 const isLoading       = ref(false)
 const isGoogleLoading = ref(false)
 const showSetPassword = ref(false)  // ← shows the "set a password" prompt
+
+
+const route     = useRoute()
+const isTimeout = computed(() => route.query.reason === 'timeout')
 
 const supabase = useSupabaseClient()
 

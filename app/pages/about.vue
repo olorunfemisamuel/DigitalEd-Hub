@@ -173,7 +173,7 @@
 
   <div class="space-y-4 text-gray-500 text-sm leading-relaxed">
     <p>
-      Mrs. Ufedo Laura Obochi is a pioneering force in digital education. With over 15 years of experience,
+      Mrs. Ufedo Laura Obochi is a pioneering force in digital education. With over 15 years of experience as a teacher,
       she has dedicated her career to transforming the way teachers engage with digital tools. She believes
       that the best way to serve students is by empowering those who teach them.
     </p>
@@ -186,27 +186,25 @@
     <!-- ✅ Full bio — shown when expanded -->
     <Transition name="bio">
       <div v-if="showFullBio" class="space-y-4">
-        <p>
+        <!-- <p>
           Before founding DigitalEd Hub, Mrs. Obochi served as a curriculum developer and instructional
           designer across several educational institutions in Nigeria, where she witnessed firsthand the
           growing gap between traditional teaching methods and the demands of a digital world.
-        </p>
-        <p>
+        </p> -->
+        <!-- <p>
           Her work took her across West Africa, training hundreds of teachers in digital literacy,
           classroom technology integration, and online course creation. She quickly became known not
           just as a trainer, but as a movement builder — someone who could turn a room full of
           skeptical teachers into confident digital educators in a matter of days.
-        </p>
+        </p> -->
         <p>
-          In 2022, she channeled that experience into building DigitalEd Hub — a platform designed from
-          the ground up by an educator, for educators. Every feature, every course, every community
+          Every feature, every course, every community
           thread on this platform carries the fingerprints of her mission: that no teacher should be
           left behind in the digital age.
         </p>
         <p>
           Outside of her work, Mrs. Obochi is a wife, mother, and passionate advocate for women in
-          EdTech. She speaks regularly at education conferences and mentors young women pursuing careers
-          in instructional design and digital learning.
+          EdTech.
         </p>
       </div>
     </Transition>

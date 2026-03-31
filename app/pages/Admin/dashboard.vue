@@ -44,6 +44,8 @@
           </svg>
           Students
         </NuxtLink>
+
+
         <NuxtLink to="/admin/community" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="20" x2="18" y2="10"/>
@@ -52,6 +54,19 @@
           </svg>
           Community
         </NuxtLink>
+
+
+        
+  <!-- <NuxtLink to="/admin/resources" @click="sidebarOpen = false"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-semibold">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          Resources
+        </NuxtLink> -->
+
+
         <NuxtLink to="/admin/settings" @click="sidebarOpen = false" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
@@ -239,6 +254,7 @@
 </template>
 
 <script setup lang="ts">
+
 import { ref, computed, onMounted } from 'vue'
 
 definePageMeta({ layout: false })

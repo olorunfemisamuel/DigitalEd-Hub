@@ -230,6 +230,8 @@
 </template>
 
 <script setup lang="ts">
+// ✅ Auto logout after 20 mins of inactivity
+useStudentAutoLogout()
 import { ref, onMounted } from 'vue'
 
 definePageMeta({ layout: false })
