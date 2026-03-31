@@ -120,7 +120,7 @@
       <!-- Left: branding -->
       <div>
         <p class="text-xs font-bold text-gray-700">DigitalEd Hub</p>
-        <p class="text-[10px] text-gray-400">© 2024 DigitalEd Hub: The Academic Curator System.</p>
+        <p class="text-[10px] text-gray-400">© 2026 DigitalEd Hub: The Educator's Community.</p>
       </div>
 
       <!-- Right: links -->

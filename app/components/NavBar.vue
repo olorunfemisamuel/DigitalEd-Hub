@@ -44,6 +44,13 @@
               Community
             </NuxtLink>
           </li>
+
+          <!-- <li>
+            <NuxtLink to="/resources" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors" active-class="text-blue-600">
+              Resources
+            </NuxtLink>
+          </li> -->
+
           <li>
             <NuxtLink to="/about" class="text-gray-700 text-sm font-medium hover:text-blue-600 transition-colors" active-class="text-blue-600">
               About
@@ -200,6 +207,14 @@
                 class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
                 Community
               </NuxtLink>
+
+<!-- 
+                <NuxtLink to="/resources" @click="closeMenu"
+                class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
+                Resources
+              </NuxtLink> -->
+
+
               <NuxtLink to="/about" @click="closeMenu"
                 class="text-sm text-gray-700 font-medium py-2.5 hover:text-blue-600 border-b border-gray-50">
                 About
