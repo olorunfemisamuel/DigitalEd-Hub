@@ -61,9 +61,9 @@
         <h4 class="text-gray-900 font-semibold text-sm">Platform</h4>
         <ul class="flex flex-col gap-3">
           <li><NuxtLink to="/courses" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">All Courses</NuxtLink></li>
-          <li><NuxtLink to="/resources" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Free Resources</NuxtLink></li>
-          <li><NuxtLink to="/schools" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">For Schools</NuxtLink></li>
-          <li><NuxtLink to="/pricing" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Pricing Plans</NuxtLink></li>
+          <li><a href ="#" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Free Resources</a></li>
+          <li><a href ="#" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">For Schools</a></li>
+          <li><a href ="#" class="text-gray-400 text-sm hover:text-gray-700 transition-colors duration-200">Pricing Plans</a></li>
         </ul>
       </div>
 
