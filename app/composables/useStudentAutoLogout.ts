@@ -1,78 +1,97 @@
-export function useStudentAutoLogout(timeoutMinutes = 20) {
+// composables/useStudentAutoLogout.ts
+export function useStudentAutoLogout(timeoutMinutes = 10) {
   const supabase = useSupabaseClient()
   const router   = useRouter()
-  let timer: ReturnType<typeof setTimeout>
 
   const STORAGE_KEY = 'student_last_active'
+//   const TIMEOUT_MS  = timeoutMinutes * 60 * 1000
+const TIMEOUT_MS = timeoutMinutes * 60 * 1000  // ← 1 minute for testing
 
-  function updateLastActive() {
-    if (import.meta.client) {
-      localStorage.setItem(STORAGE_KEY, Date.now().toString())
-    }
+  // ── For testing: use 2 minutes instead of 20 ──
+  // const TIMEOUT_MS = 2 * 60 * 1000
+
+  let timer: ReturnType<typeof setTimeout>
+
+  function stamp() {
+    localStorage.setItem(STORAGE_KEY, Date.now().toString())
+  }
+
+  async function logout() {
+    clearTimeout(timer)
+    localStorage.removeItem(STORAGE_KEY)
+    await supabase.auth.signOut()
+    await router.replace('/login?reason=timeout')
+  }
+
+  function checkExpiry() {
+    const last = localStorage.getItem(STORAGE_KEY)
+    if (!last) return false
+    const elapsed = Date.now() - parseInt(last)
+    console.log(`[AutoLogout] Elapsed: ${Math.round(elapsed / 1000)}s / ${Math.round(TIMEOUT_MS / 1000)}s`)
+    return elapsed > TIMEOUT_MS
   }
 
   function resetTimer() {
+    stamp()
     clearTimeout(timer)
-    updateLastActive()
-    timer = setTimeout(async () => {
-      await supabase.auth.signOut()
-      await router.replace('/login?reason=timeout')
-    }, timeoutMinutes * 60 * 1000)
+    timer = setTimeout(() => {
+      console.log('[AutoLogout] Timer fired — logging out')
+      logout()
+    }, TIMEOUT_MS)
   }
 
   onMounted(() => {
     if (!import.meta.client) return
 
-    // ✅ Check if they were already inactive before this mount
-    // (e.g. they left the tab and came back after 20+ mins)
-    const lastActive = localStorage.getItem(STORAGE_KEY)
-    if (lastActive) {
-      const elapsed = Date.now() - parseInt(lastActive)
-      const timeoutMs = timeoutMinutes * 60 * 1000
-      if (elapsed > timeoutMs) {
-        // Already timed out — sign out immediately
-        supabase.auth.signOut().then(() => {
-          router.replace('/login?reason=timeout')
-        })
-        return
-      }
+    // ✅ Immediate check on mount — catches returning users
+    if (checkExpiry()) {
+      console.log('[AutoLogout] Already expired on mount — logging out')
+      logout()
+      return
     }
 
-    // ✅ Start fresh timer
+    // ✅ Start timer
     resetTimer()
 
-    // ✅ Reset on any user activity
-    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click']
+    // ✅ Activity events reset the timer
+    const events = ['mousedown', 'keydown', 'touchstart', 'scroll', 'click']
     events.forEach(e => window.addEventListener(e, resetTimer, { passive: true }))
 
-    // ✅ Also check when tab becomes visible again (user switched tabs/apps)
+    // ✅ Tab visibility change — most reliable way to catch returning users
     function onVisibilityChange() {
       if (document.visibilityState === 'visible') {
-        const lastActive = localStorage.getItem(STORAGE_KEY)
-        if (lastActive) {
-          const elapsed = Date.now() - parseInt(lastActive)
-          const timeoutMs = timeoutMinutes * 60 * 1000
-          if (elapsed > timeoutMs) {
-            supabase.auth.signOut().then(() => {
-              router.replace('/login?reason=timeout')
-            })
-            return
-          }
+        console.log('[AutoLogout] Tab became visible — checking expiry')
+        if (checkExpiry()) {
+          logout()
+        } else {
+          resetTimer()
         }
-        // Still within time — reset timer
-        resetTimer()
       } else {
-        // Tab hidden — update last active time
-        updateLastActive()
+        // Tab hidden — save timestamp
+        stamp()
+        clearTimeout(timer)
       }
     }
 
     document.addEventListener('visibilitychange', onVisibilityChange)
 
+    // ✅ Window focus — catches alt-tab back to browser
+    function onFocus() {
+      console.log('[AutoLogout] Window focused — checking expiry')
+      if (checkExpiry()) {
+        logout()
+      } else {
+        resetTimer()
+      }
+    }
+
+    window.addEventListener('focus', onFocus)
+
     onUnmounted(() => {
       clearTimeout(timer)
       events.forEach(e => window.removeEventListener(e, resetTimer))
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('focus', onFocus)
     })
   })
 }

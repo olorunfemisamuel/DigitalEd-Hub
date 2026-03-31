@@ -68,7 +68,7 @@
     <polyline points="12 6 12 12 16 14"/>
   </svg>
   <p class="text-sm text-amber-700 font-medium">
-    Your session expired after 20 minutes of inactivity. Please log in again.
+    Your session expired. Please log in again.
   </p>
 </div>
 
